@@ -124,13 +124,18 @@ int main(void) {
         joypad_buttons_t held = joypad_get_buttons_held(JOYPAD_PORT_1);
         joypad_buttons_t pressed = joypad_get_buttons_pressed(JOYPAD_PORT_1);
         float mx = (float)in.stick_x / 70.f, mz = (float)in.stick_y / 70.f;
-        if (fabsf(mx) < 0.12f) mx = 0; if (fabsf(mz) < 0.12f) mz = 0;
-        if (mx > 1) mx = 1; if (mx < -1) mx = -1; if (mz > 1) mz = 1; if (mz < -1) mz = -1;
+        if (fabsf(mx) < 0.12f) mx = 0;
+        if (fabsf(mz) < 0.12f) mz = 0;
+        if (mx > 1) mx = 1;
+        if (mx < -1) mx = -1;
+        if (mz > 1) mz = 1;
+        if (mz < -1) mz = -1;
         if (held.c_left)  pl.yaw += 2.2f * dt;
         if (held.c_right) pl.yaw -= 2.2f * dt;
         if (held.c_up)    pl.pitch += 1.5f * dt;
         if (held.c_down)  pl.pitch -= 1.5f * dt;
-        if (pl.pitch > 1.2f) pl.pitch = 1.2f; if (pl.pitch < -1.2f) pl.pitch = -1.2f;
+        if (pl.pitch > 1.2f) pl.pitch = 1.2f;
+        if (pl.pitch < -1.2f) pl.pitch = -1.2f;
         if (pressed.start) { game_init(&pl); }
         if (!pl.won) game_step(&pl, dt, mx, mz, pressed.a || (held.a && pl.grounded), held.b || held.z);
 
