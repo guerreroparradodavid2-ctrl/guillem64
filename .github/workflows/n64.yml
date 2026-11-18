@@ -6,7 +6,7 @@ on:
 jobs:
   rom:
     runs-on: ubuntu-latest
-    container: ghcr.io/dragonminded/libdragon:trunk
+    container: ghcr.io/dragonminded/libdragon@sha256:14032432c051382254816719aff603c79a2bdaf9d60deafd6ec0d69871a5c6c0
     steps:
       - uses: actions/checkout@v4
       - name: Compilar ROM
