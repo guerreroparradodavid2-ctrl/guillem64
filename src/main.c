@@ -102,7 +102,6 @@ int main(void) {
     debug_init_usblog();
     display_init(RESOLUTION_320x240, DEPTH_16_BPP, 3, GAMMA_NONE, FILTERS_RESAMPLE_ANTIALIAS_DEDITHER);
     zbuf = surface_alloc(FMT_RGBA16, display_get_width(), display_get_height());
-    rdpq_init();
     gl_init();
     joypad_init();
     rdpq_font_t *fnt = rdpq_font_load_builtin(FONT_BUILTIN_DEBUG_MONO);
