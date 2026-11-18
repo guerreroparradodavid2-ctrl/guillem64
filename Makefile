@@ -1,6 +1,7 @@
 BUILD_DIR=build
 SOURCE_DIR=src
 include $(N64_INST)/include/n64.mk
+N64_TOOLFLAGS += --size 1M
 
 OBJS = $(BUILD_DIR)/main.o
 
