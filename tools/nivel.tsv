@@ -1,0 +1,534 @@
+nombre	x	y	z	rot_quat	escala	componentes
+Cube (74)	-33.57	82.34	-67.48	0.000,0.000,0.000,1.000	3.00,1.00,3.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (41)	-62.96	65.62	-4.94	0.000,0.000,0.000,1.000	3.00,1.00,3.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (13)	-45.13	35.54	-63.30	-0.000,0.224,-0.000,0.975	3.95,-0.33,30.49	mesh=Cube;box(1.00,1.00,1.00)
+Cube (39)	-68.72	65.62	1.98	0.000,0.000,0.000,1.000	3.00,1.00,3.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (23)	-15.25	41.58	-71.75	0.000,0.000,0.000,1.000	1.00,4.97,3.59	mesh=Cube;box(1.00,1.00,1.00)
+Cube (34)	14.90	16.14	143.60	0.000,0.707,0.000,0.707	0.00,180.94,694779.08	mesh=Cube;box(1.00,1.00,1.00)
+Cube (76)	-33.57	82.34	-82.10	0.000,0.000,0.000,1.000	3.00,1.00,3.00	mesh=Cube;box(1.00,1.00,1.00)
+Sphere	-45.82	16.48	44.49	0.151,-0.752,0.168,0.620	1.02,1.02,1.02	mesh=Sphere;sphere(0.50)
+Cube	-54.45	33.38	-48.70	-0.000,-0.000,-0.000,1.000	3.07,1.00,3.98	mesh=Cube;box(1.00,1.00,1.00);script=mover
+Cube (44)	-55.56	65.62	-16.99	0.000,0.000,0.000,1.000	8.47,1.00,7.22	mesh=Cube;box(1.00,1.00,1.00)
+Cube (49)	-57.46	70.81	-47.62	0.000,0.707,0.000,0.707	0.25,1.00,5.95	mesh=Cube;box(1.00,1.00,1.00);script=morirte
+Cube (61)	-61.65	74.58	-75.79	0.000,0.000,0.000,1.000	5.08,6.43,1.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (63)	-48.59	74.63	-75.79	0.000,0.000,0.000,1.000	5.25,6.51,1.00	mesh=Cube;box(1.00,1.00,1.00);script=morirte
+Cube (32)	-71.14	17.00	61.16	0.000,0.000,0.000,1.000	2.00,5.00,2.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (8)	-60.50	12.15	-45.90	0.000,0.000,0.000,1.000	2.00,43.64,2.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (12)	-48.87	37.35	-62.70	0.000,0.000,0.000,1.000	1.00,1.00,1.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (79)	-20.78	81.71	-70.71	0.000,0.000,0.000,1.000	3.00,1.00,3.00	mesh=Cube;box(1.00,1.00,1.00);script=Trampolin
+Cube (51)	-63.37	70.81	-42.62	0.000,0.000,0.000,1.000	0.25,1.00,5.95	mesh=Cube;box(1.00,1.00,1.00);script=morirte
+Cube (64)	-54.95	74.90	-75.15	0.000,0.000,0.000,1.000	4.73,4.40,-0.02	mesh=Cube;box(1.00,1.00,1.00)
+Cube (80)	-31.27	118.19	-37.77	-0.000,0.112,-0.000,0.994	12.73,1.00,11.04	mesh=Cube;box(1.00,1.00,1.00);script=final
+Cube (30)	-0.45	45.03	-3.04	0.000,0.000,0.000,1.000	1.00,1.00,1.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (54)	-58.26	75.00	-75.61	0.000,0.000,0.000,1.000	1.25,7.43,1.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (75)	-30.87	80.79	-74.97	0.000,0.000,0.000,1.000	3.00,1.00,3.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (62)	-54.85	74.63	-75.79	0.000,0.000,0.000,1.000	5.25,6.51,1.00	mesh=Cube;box(1.00,1.00,1.00);script=morirte
+Terrain	-256.00	15.06	-599.00	0.000,0.000,0.000,1.000	1.00,15.95,1.00	TERRAIN
+Cube (17)	-15.30	44.50	-71.22	-0.707,0.000,0.000,0.707	1.00,5.85,0.73	mesh=Cube;box(1.00,1.00,1.00)
+Cube (24)	-15.25	41.58	-75.96	0.000,0.000,0.000,1.000	1.00,4.97,3.59	mesh=Cube;box(1.00,1.00,1.00)
+Sphere (1)	-45.42	16.48	45.00	-0.395,-0.360,-0.714,-0.452	1.02,1.02,1.02	mesh=Sphere;sphere(0.50)
+Cube (55)	-58.17	75.00	-75.61	0.000,0.000,0.000,1.000	1.25,7.43,1.00	mesh=Cube;box(1.00,1.00,1.00)
+bed_frame (1)	-27.49	39.90	-80.07	0.175,-0.685,-0.685,-0.175	1.00,1.00,1.00	mesh=Box02;box(2.76,4.98,1.11);box(2.76,0.48,2.00);script=morirte
+Cube (45)	-61.38	70.15	-45.97	0.000,0.000,0.000,1.000	12.07,1.00,11.58	mesh=Cube;box(1.00,1.00,1.00)
+Cube (42)	-55.56	65.62	-5.30	0.000,0.000,0.000,1.000	3.00,1.00,3.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (4)	-60.84	12.15	-39.30	0.000,0.000,0.000,1.000	2.00,43.64,2.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (60)	-48.67	78.36	-75.61	0.500,0.500,-0.500,0.500	1.25,7.43,1.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (48)	-63.82	70.81	-48.26	0.000,0.000,0.000,1.000	0.25,1.00,5.95	mesh=Cube;box(1.00,1.00,1.00);script=morirte
+Cube (1)	-56.54	32.10	-25.54	0.000,0.000,0.000,1.000	3.97,1.00,6.87	mesh=Cube;box(1.00,1.00,1.00)
+Cube (52)	-64.70	75.00	-75.61	0.000,0.000,0.000,1.000	1.25,7.43,1.00	mesh=Cube;box(1.00,1.00,1.00)
+bed_frame (3)	-25.47	39.90	-81.08	-0.649,-0.281,-0.281,0.649	1.00,1.00,1.00	mesh=Box02;box(2.76,4.98,1.11);box(2.76,0.48,2.00);script=morirte
+Cube (70)	-37.45	79.36	-86.81	0.000,0.000,0.000,1.000	3.00,1.00,3.00	mesh=Cube;box(1.00,1.00,1.00)
+Capsule	-27.60	16.09	80.59	0.000,0.657,-0.000,0.754	1.00,1.00,1.00	mesh=Capsule;capsule(0.50,2.00);script=audio
+Cube (7)	-62.90	12.15	-45.90	0.000,0.000,0.000,1.000	2.00,43.64,2.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (65)	-61.34	74.90	-75.15	0.000,0.000,0.000,1.000	4.73,5.01,-0.02	mesh=Cube;box(1.00,1.00,1.00)
+Cube (37)	-62.86	65.62	7.73	0.000,0.000,0.000,1.000	3.00,1.00,3.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (77)	-33.57	82.34	-75.05	0.000,0.000,0.707,0.707	4.31,1.00,5.70	mesh=Cube;box(1.00,1.00,1.00);script=mover
+Cube (16)	-15.30	41.77	-73.84	0.000,0.000,0.000,1.000	1.00,5.85,0.73	mesh=Cube;box(1.00,1.00,1.00)
+Cube (22)	-15.30	41.77	-82.47	0.000,0.000,0.000,1.000	1.00,5.85,0.73	mesh=Cube;box(1.00,1.00,1.00)
+Cube (2)	-60.84	12.15	-30.09	0.000,0.000,0.000,1.000	2.00,43.64,2.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (11)	-59.06	37.35	-62.70	0.000,0.000,0.000,1.000	1.00,1.00,1.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (43)	-55.56	65.62	-10.58	0.000,0.000,0.000,1.000	3.00,1.00,3.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (9)	-62.22	33.38	-48.70	0.000,0.000,0.000,1.000	1.00,1.00,1.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (26)	-16.08	42.00	-71.77	0.000,0.000,0.000,1.000	0.04,2.26,1.79	mesh=Cube;box(1.00,1.00,1.00)
+Cube (31)	-0.45	55.36	-3.04	0.000,0.000,0.000,1.000	1.00,1.00,1.00	mesh=Cube;box(1.00,1.00,1.00)
+GameObject	-45.25	16.75	44.57	0.000,0.000,0.000,1.000	1.00,1.00,1.00	script=framerate
+Audio Source	-45.37	16.87	44.66	0.000,0.924,0.000,0.383	1.00,1.00,1.00	
+Cube (67)	-50.99	74.57	-86.81	0.000,0.000,0.000,1.000	3.00,1.00,3.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (73)	-36.60	80.79	-74.97	0.000,0.000,0.000,1.000	3.00,1.00,3.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (6)	-62.90	12.15	-43.80	0.000,0.000,0.000,1.000	1.00,43.64,1.00	mesh=Cube;box(1.00,1.00,1.00);script=morirte
+Cube (36)	14.90	16.14	143.26	0.000,0.707,0.000,0.707	0.00,180.94,694779.08	mesh=Cube;box(1.00,1.00,1.00)
+Cube (46)	-58.50	70.81	-44.51	0.000,0.000,0.000,1.000	0.25,1.00,5.95	mesh=Cube;box(1.00,1.00,1.00);script=morirte
+Cube (68)	-46.22	76.24	-86.81	0.000,0.000,0.000,1.000	3.00,1.00,3.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (50)	-66.99	70.81	-48.26	0.000,0.000,0.000,1.000	0.25,1.00,5.95	mesh=Cube;box(1.00,1.00,1.00);script=morirte
+Cube (25)	-15.25	41.58	-80.21	0.000,0.000,0.000,1.000	1.00,4.97,3.59	mesh=Cube;box(1.00,1.00,1.00)
+Cube (33)	74.39	16.14	80.17	0.000,0.000,0.000,1.000	1.00,180.94,833.53	mesh=Cube;box(1.00,1.00,1.00)
+Cube (3)	-60.84	12.15	-34.60	0.000,0.000,0.000,1.000	2.00,43.64,2.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (56)	-51.73	75.00	-75.61	0.000,0.000,0.000,1.000	1.25,7.43,1.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (29)	8.02	41.89	-53.53	0.000,0.000,0.000,1.000	5.91,1.00,8.34	mesh=Cube;box(1.00,1.00,1.00);script=timing
+Cube (10)	-55.54	33.38	-48.70	0.000,0.000,0.000,1.000	1.00,1.00,1.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (18)	-15.30	41.85	-66.75	0.000,0.000,0.000,1.000	1.00,6.02,6.28	mesh=Cube;box(1.00,1.00,1.00)
+Cube (40)	-68.72	65.62	-4.38	0.000,0.000,0.000,1.000	3.00,1.00,3.00	mesh=Cube;box(1.00,1.00,1.00)
+bed_frame (2)	-24.98	39.90	-76.73	-0.463,-0.534,-0.534,0.463	1.00,1.00,1.00	mesh=Box02;box(2.76,0.48,2.00);box(2.76,4.98,1.11);script=morirte
+Cube (71)	-37.45	79.36	-82.59	0.000,0.000,0.000,1.000	3.00,1.00,3.00	mesh=Cube;box(1.00,1.00,1.00);script=morirte
+Cube (14)	-40.02	37.38	-65.77	-0.000,0.224,-0.000,0.975	3.95,-0.33,30.49	mesh=Cube;box(1.00,1.00,1.00)
+Cube (59)	-45.34	75.00	-75.61	0.000,0.000,0.000,1.000	1.25,7.43,1.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (19)	-15.30	44.50	-76.83	-0.707,0.000,0.000,0.707	1.00,5.85,0.73	mesh=Cube;box(1.00,1.00,1.00)
+Cube (66)	-55.56	72.36	-86.81	0.000,0.000,0.000,1.000	3.00,1.00,3.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (28)	-16.08	42.00	-79.86	0.000,0.000,0.000,1.000	0.04,2.26,1.79	mesh=Cube;box(1.00,1.00,1.00)
+Cube (5)	-62.90	12.15	-41.55	0.000,0.000,0.000,1.000	2.00,43.64,2.00	mesh=Cube;box(1.00,1.00,1.00)
+Sphere	-27.54	111.39	-38.90	0.000,0.000,0.000,1.000	44.12,0.17,45.85	mesh=Sphere;meshcol=Sphere;sphere(0.50);script=morirte
+Cube (36)	-27.81	66.08	8.68	0.000,0.000,0.000,1.000	1.00,1.00,1.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (27)	-16.08	42.00	-75.82	0.000,0.000,0.000,1.000	0.04,2.26,1.79	mesh=Cube;box(1.00,1.00,1.00)
+Cube (21)	-15.30	44.50	-79.75	-0.707,0.000,0.000,0.707	1.00,5.85,0.73	mesh=Cube;box(1.00,1.00,1.00)
+Cube (35)	-118.50	16.14	80.17	0.000,0.000,0.000,1.000	1.00,180.94,833.53	mesh=Cube;box(1.00,1.00,1.00)
+Cube (15)	-35.33	39.14	-68.04	-0.000,0.224,-0.000,0.975	3.95,-0.33,30.49	mesh=Cube;box(1.00,1.00,1.00)
+bed_frame	-28.11	39.90	-72.57	-0.129,-0.695,-0.695,0.129	1.00,1.00,1.00	mesh=Box02;box(2.76,0.48,2.00);box(2.76,4.98,1.11);script=morirte
+Cube (78)	-19.52	80.79	-72.06	0.000,0.000,0.000,1.000	17.35,1.00,17.35	mesh=Cube;box(1.00,1.00,1.00)
+Cube (57)	-55.06	78.36	-75.61	0.500,0.500,-0.500,0.500	1.25,7.43,1.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (58)	-48.53	74.90	-75.15	0.000,0.000,0.000,1.000	4.73,2.71,-0.02	mesh=Cube;box(1.00,1.00,1.00)
+Cube (34)	-27.81	55.75	8.68	0.000,0.000,0.000,1.000	1.00,1.00,1.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (69)	-41.34	77.68	-86.81	0.000,0.000,0.000,1.000	3.00,1.00,3.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (53)	-61.59	78.36	-75.61	0.500,0.500,-0.500,0.500	1.25,7.43,1.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (20)	-15.30	41.77	-77.99	0.000,0.000,0.000,1.000	1.00,5.85,0.73	mesh=Cube;box(1.00,1.00,1.00)
+Cube (47)	-61.31	70.81	-45.31	0.000,0.707,0.000,0.707	0.25,1.00,5.95	mesh=Cube;box(1.00,1.00,1.00);script=morirte
+Cube (38)	-68.72	65.62	7.73	0.000,0.000,0.000,1.000	3.00,1.00,3.00	mesh=Cube;box(1.00,1.00,1.00)
+Cube (72)	-37.45	79.36	-78.41	0.000,0.000,0.000,1.000	3.00,1.00,3.00	mesh=Cube;box(1.00,1.00,1.00)
+rpgpp_lt_building_05 (1)	-64.17	15.06	93.87	-0.000,0.413,-0.000,0.911	1.00,1.00,1.00	mesh=rpgpp_lt_building_05;box(11.26,9.94,11.31)
+rpgpp_lt_building_05	-31.62	15.66	24.42	-0.000,-0.691,-0.000,0.723	1.00,1.00,1.00	mesh=rpgpp_lt_building_05;box(11.26,9.94,11.31)
+rpgpp_lt_building_04	-61.95	15.95	12.77	-0.000,-0.928,-0.000,-0.373	1.00,1.00,1.00	mesh=rpgpp_lt_building_04;box(8.41,9.65,9.73)
+rpgpp_lt_building_03	-61.10	15.06	33.62	-0.000,-0.837,-0.000,-0.547	1.00,1.00,1.00	mesh=rpgpp_lt_building_03;box(11.94,10.70,7.74)
+rpgpp_lt_wood_path_01b (2)	-58.38	23.15	-17.61	-0.000,-0.417,-0.000,0.909	1.00,1.00,2.16	mesh=rpgpp_lt_wood_path_01b;box(4.47,0.16,2.81)
+rpgpp_lt_wood_path_01b (1)	-53.58	21.16	-15.35	-0.000,-0.417,-0.000,0.909	1.00,1.00,1.00	mesh=rpgpp_lt_wood_path_01b;box(4.47,0.16,2.81)
+rpgpp_lt_wood_path_01b	-49.95	19.21	-11.21	-0.000,-0.376,-0.000,0.927	1.00,1.00,1.00	mesh=rpgpp_lt_wood_path_01b;box(4.47,0.16,2.81)
+rpgpp_lt_wood_path_01b (3)	-54.09	25.62	-15.95	-0.000,-0.417,-0.000,0.909	1.00,1.00,1.00	mesh=rpgpp_lt_wood_path_01b;box(4.47,0.16,2.81)
+rpgpp_lt_wood_path_01b (5)	-54.09	28.84	-15.95	-0.000,-0.417,-0.000,0.909	1.00,1.00,1.00	mesh=rpgpp_lt_wood_path_01b;box(4.47,0.16,2.81)
+rpgpp_lt_wood_path_01b (4)	-50.98	26.40	-12.33	-0.000,-0.417,-0.000,0.909	1.00,1.00,1.00	mesh=rpgpp_lt_wood_path_01b;box(4.47,0.16,2.81)
+rpgpp_lt_wood_path_01b (6)	-56.70	32.68	-21.85	0.136,-0.527,-0.209,0.812	1.94,1.00,1.00	mesh=rpgpp_lt_wood_path_01b;box(4.47,0.16,2.81)
+rpgpp_lt_building_01	-28.03	15.82	48.29	-0.000,0.930,-0.000,-0.367	1.00,1.00,1.00	mesh=rpgpp_lt_building_01;box(8.40,10.18,13.36)
+rpgpp_lt_building_01 (1)	-21.62	15.06	100.94	-0.000,-0.923,-0.000,0.386	1.00,1.00,1.00	mesh=rpgpp_lt_building_01;meshcol=rpgpp_lt_building_01;box(8.40,10.18,13.36)
+rpgpp_lt_well_01	-45.23	15.06	89.21	0.000,-0.000,-0.000,1.000	1.00,1.00,1.00	mesh=rpgpp_lt_well_01;box(2.72,3.71,2.14)
+rpgpp_lt_wood_path_01a (7)	-23.92	38.98	-76.87	0.000,-0.000,-0.000,1.000	3.07,1.00,3.07	mesh=rpgpp_lt_wood_path_01a;box(4.47,0.16,2.89)
+rpgpp_lt_wood_path_01a (6)	-23.52	38.98	-69.11	0.000,-0.000,-0.000,1.000	3.07,1.00,3.07	mesh=rpgpp_lt_wood_path_01a;box(4.47,0.16,2.89)
+rpgpp_lt_wood_path_01a (17)	-65.49	71.16	-69.98	0.000,-0.000,-0.000,1.000	3.07,1.00,3.07	mesh=rpgpp_lt_wood_path_01a;box(4.47,0.16,2.89)
+rpgpp_lt_wood_path_01a (14)	-65.49	71.16	-54.25	0.000,-0.000,-0.000,1.000	3.07,1.00,3.07	mesh=rpgpp_lt_wood_path_01a;box(4.47,0.16,2.89)
+rpgpp_lt_wood_path_01a (20)	-52.06	71.16	-77.27	0.000,-0.000,-0.000,1.000	1.70,1.00,3.19	mesh=rpgpp_lt_wood_path_01a;box(4.47,0.16,2.89)
+rpgpp_lt_wood_path_01a	-42.19	15.06	-1.03	0.000,-0.000,-0.000,1.000	1.00,1.00,1.00	mesh=rpgpp_lt_wood_path_01a;box(4.47,0.16,2.89)
+rpgpp_lt_wood_path_01a (15)	-65.49	71.16	-62.41	0.000,-0.000,-0.000,1.000	3.07,1.00,3.07	mesh=rpgpp_lt_wood_path_01a;box(4.47,0.16,2.89)
+rpgpp_lt_wood_path_01a (19)	-65.49	71.16	-77.21	0.000,-0.000,-0.000,1.000	3.07,1.00,3.07	mesh=rpgpp_lt_wood_path_01a;box(4.47,0.16,2.89)
+rpgpp_lt_wood_path_01a (22)	-3.37	49.68	8.06	0.275,0.962,0.000,0.000	7.38,1.90,5.37	mesh=rpgpp_lt_wood_path_01a;box(4.47,0.16,2.89)
+rpgpp_lt_wood_path_01a (12)	-19.28	55.34	0.44	-0.000,-0.704,-0.000,0.710	7.53,1.90,11.21	mesh=rpgpp_lt_wood_path_01a;box(4.47,0.16,2.89)
+rpgpp_lt_wood_path_01a (21)	-7.36	38.50	-26.94	-0.193,-0.677,0.195,0.683	7.38,1.90,7.51	mesh=rpgpp_lt_wood_path_01a;box(4.47,0.16,2.89)
+rpgpp_lt_wood_path_01a (16)	-52.06	71.16	-62.41	0.000,-0.000,-0.000,1.000	3.07,1.00,3.07	mesh=rpgpp_lt_wood_path_01a;box(4.47,0.16,2.89)
+rpgpp_lt_wood_path_01a (5)	-38.05	38.98	-77.29	0.000,-0.000,-0.000,1.000	3.07,1.00,3.07	mesh=rpgpp_lt_wood_path_01a;box(4.47,0.16,2.89)
+rpgpp_lt_wood_path_01a (4)	-37.37	38.98	-69.11	0.000,-0.000,-0.000,1.000	3.07,1.00,3.07	mesh=rpgpp_lt_wood_path_01a;box(4.47,0.16,2.89)
+rpgpp_lt_wood_path_01a (3)	-60.89	33.87	-62.22	0.000,-0.000,-0.000,1.000	3.07,1.00,3.07	mesh=rpgpp_lt_wood_path_01a;box(4.47,0.16,2.89)
+rpgpp_lt_wood_path_01a (18)	-52.06	71.16	-69.98	0.000,-0.000,-0.000,1.000	1.60,1.00,3.07	mesh=rpgpp_lt_wood_path_01a;box(4.47,0.16,2.89)
+rpgpp_lt_wood_path_01a (13)	-54.84	65.20	0.73	-0.000,-0.704,-0.000,0.710	7.53,1.90,11.21	mesh=rpgpp_lt_wood_path_01a;box(4.47,0.16,2.89)
+rpgpp_lt_wood_path_01a (8)	-9.62	38.98	-82.62	-0.000,-0.667,-0.000,0.745	3.07,1.00,3.07	mesh=rpgpp_lt_wood_path_01a;box(4.47,0.16,2.89)
+rpgpp_lt_wood_path_01a (2)	-65.49	33.87	-54.25	0.000,-0.000,-0.000,1.000	3.07,1.00,3.07	mesh=rpgpp_lt_wood_path_01a;box(4.47,0.16,2.89)
+rpgpp_lt_wood_path_01a (11)	-5.81	39.42	-29.09	-0.120,-0.624,0.157,0.756	3.14,1.90,9.90	mesh=rpgpp_lt_wood_path_01a;box(4.47,0.16,2.89)
+rpgpp_lt_wood_path_01a (9)	0.03	40.91	-47.08	-0.000,-0.667,-0.000,0.745	4.11,1.00,7.57	mesh=rpgpp_lt_wood_path_01a;box(4.47,0.16,2.89)
+rpgpp_lt_wood_path_01a (10)	-9.57	44.88	-17.42	-0.000,-0.667,-0.000,0.745	3.10,1.90,14.71	mesh=rpgpp_lt_wood_path_01a;box(4.47,0.16,2.89)
+rpgpp_lt_wood_path_01a (1)	-46.32	17.39	-6.77	-0.000,-0.327,-0.000,0.945	1.00,1.00,1.00	mesh=rpgpp_lt_wood_path_01a;box(4.47,0.16,2.89)
+mixamorig_LeftHandIndex4	-52.91	15.68	109.78	0.180,0.044,-0.925,-0.332	0.05,0.05,0.05	
+mixamorig:RightShoulder	-19.41	40.81	-81.67	-0.659,-0.556,0.442,-0.249	23.53,23.53,23.53	
+VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00	-41.62	67.02	20.40	0.529,-0.023,0.804,0.269	0.02,0.02,0.02	mesh=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;meshcol=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;script=Trampolin
+mixamorig:RightArm	-19.26	40.77	-81.69	-0.458,-0.628,0.625,-0.072	23.53,23.53,23.53	
+mixamorig:RightHandIndex1	-53.69	68.21	-18.53	0.901,-0.257,0.276,0.215	3.75,3.75,3.75	
+Collectable Variant (6)	-60.68	34.44	-34.17	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (18)	1.52	41.63	-65.75	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (22)	-48.75	26.83	-11.22	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (32)	-22.50	55.86	31.86	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant	-47.67	16.16	18.29	-0.000,-0.197,-0.000,0.980	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (1)	-46.83	16.30	16.10	-0.000,-0.861,-0.000,0.508	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (16)	-3.49	39.57	-72.24	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (42)	-60.39	67.77	-30.34	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (20)	-56.54	23.58	-15.82	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (28)	9.78	41.34	-36.29	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (9)	-56.55	35.52	-58.00	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (4)	-47.58	20.14	-9.95	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (46)	-41.45	78.50	-86.81	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (3)	-43.78	18.26	-6.13	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (35)	-68.89	66.44	7.55	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (47)	-37.89	80.18	-86.70	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (5)	-60.77	34.44	-29.98	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (27)	9.76	41.34	-40.57	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (8)	-57.74	35.52	-56.96	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (41)	-55.75	66.44	-16.37	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (36)	-68.83	66.44	1.99	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (19)	7.88	42.71	-53.92	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (12)	-41.68	39.62	-80.90	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (33)	4.59	55.86	31.90	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (39)	-55.61	66.44	-5.22	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (2)	-43.70	16.16	8.84	-0.000,-0.197,-0.000,0.980	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (49)	-36.31	81.61	-74.95	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (43)	-55.17	73.18	-86.98	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (7)	-60.73	36.09	-36.87	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (1)	-44.90	16.30	11.53	-0.000,-0.861,-0.000,0.508	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (15)	-5.73	39.41	-74.76	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (34)	-63.01	66.44	7.80	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (13)	-9.56	39.41	-76.59	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (40)	-55.46	66.44	-10.59	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (1)	-45.75	16.16	13.73	-0.000,-0.197,-0.000,0.980	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (17)	-0.98	40.63	-69.26	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (30)	-22.83	55.86	2.40	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (23)	-51.65	29.27	-14.19	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (37)	-69.09	66.44	-4.66	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (44)	-50.94	75.39	-86.74	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (31)	3.19	55.86	2.20	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (21)	-51.39	26.05	-14.45	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (10)	-51.58	36.02	-76.04	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (48)	-37.35	80.18	-78.27	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (25)	-60.54	34.29	-45.58	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (29)	9.70	41.34	-32.43	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (38)	-63.34	66.44	-5.43	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (14)	-7.54	39.41	-75.94	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (50)	-30.86	81.61	-74.67	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (26)	9.41	41.34	-43.87	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (45)	-46.57	77.06	-86.47	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (24)	-62.66	34.29	-41.47	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (1)	-42.85	16.30	6.64	-0.000,-0.861,-0.000,0.508	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+Collectable Variant (11)	-46.91	37.86	-78.61	-0.000,-0.744,-0.000,0.668	1.00,1.00,1.00	mesh=Collectable;capsule(0.51,0.47)T;script=CollectableGem
+mixamorig:RightShoulder	-53.15	72.98	-66.14	-0.630,-0.570,0.482,-0.214	23.53,23.53,23.53	
+Cube	-54.37	36.82	-62.54	0.000,0.000,0.000,1.000	0.03,5.18,1.94	mesh=Cube;box(1.00,1.00,1.00)
+ID288	-51.91	15.06	89.26	-0.664,-0.242,-0.242,0.664	0.01,0.01,0.01	meshcol=-
+Toilet01	-18.40	111.01	-39.20	-0.000,-0.663,-0.000,0.749	0.20,0.20,0.20	
+mixamorig:RightArm	-53.01	72.94	-66.18	-0.418,-0.631,0.653,-0.033	23.53,23.53,23.53	
+mixamorig:RightHandMiddle3	-53.71	68.13	-18.53	0.902,-0.240,0.346,0.095	3.75,3.75,3.75	
+mixamorig:LeftToeBase	-54.30	66.20	-19.13	-0.280,0.597,0.653,0.371	3.75,3.75,3.75	
+mixamorig_LeftHandIndex2	-52.85	15.76	109.81	0.188,0.077,-0.915,-0.348	0.05,0.05,0.05	
+Calamardo (1)	-54.18	71.27	-66.13	-0.000,0.062,-0.000,0.998	23.53,23.53,23.53	script=audio
+Pool Table	-33.65	15.06	90.04	-0.000,-0.511,-0.000,0.860	1.00,1.00,1.00	mesh=Combined Mesh (root: scene);box(2.82,0.75,1.55)
+mixamorig:Hips	-53.25	72.44	-66.41	0.165,-0.122,0.025,0.978	23.53,23.53,23.53	
+mixamorig:LeftHandIndex3	-54.29	68.17	-18.93	0.915,-0.057,0.136,0.375	3.75,3.75,3.75	
+goal	-17.10	15.06	131.90	-0.000,-0.711,-0.000,0.703	0.30,0.30,0.30	meshcol=-
+model	-46.25	17.00	44.64	0.000,-0.896,0.000,-0.445	5.10,5.10,5.10	script=anima
+ps1	-60.38	65.98	-30.13	0.099,-0.602,-0.129,0.782	54.39,54.39,54.39	meshcol=-
+goal (1)	-47.10	15.06	131.50	0.000,0.707,0.000,0.707	0.30,0.30,0.30	meshcol=-
+ImageToStl.com_guillem the frutem	702.24	60.80	-547.68	-0.000,0.971,-0.000,0.239	1.00,1.00,1.00	
+Chao Karate Bridge	1.28	41.13	-66.25	-0.101,0.340,0.037,0.934	1.99,1.00,7.59	meshcol=-
+spongebob_jf	14.76	40.93	-44.79	-0.000,-0.918,-0.000,0.397	4.00,4.00,4.00	script=audio
+model	-51.91	15.06	89.26	-0.664,-0.242,-0.242,0.664	0.01,0.01,0.01	mesh=SketchUp;meshcol=SketchUp;script=audio
+Sitting Laughing	-52.94	14.71	110.40	-0.000,0.987,-0.000,0.163	0.05,0.05,0.05	meshcol=-;script=audio
+bob dae	-59.61	15.06	43.96	-0.431,0.561,0.561,0.431	0.50,0.50,0.50	script=audio
+mixamorig_RightHandIndex1	-52.74	15.77	109.65	-0.162,-0.069,0.974,-0.140	0.05,0.05,0.05	
+Calamardo	-20.43	39.09	-81.78	0.000,0.000,0.000,1.000	23.53,23.53,23.53	script=audio
+mixamorig:Hips	-19.47	40.27	-81.95	0.164,-0.183,0.035,0.969	23.53,23.53,23.53	
+mixamorig_LeftArm	-52.45	16.65	110.29	0.424,-0.067,-0.893,0.135	0.05,0.05,0.05	
+mixamorig_LeftHandThumb1	-52.67	15.98	110.03	0.127,0.158,-0.858,-0.472	0.05,0.05,0.05	
+mixamorig:Spine	-53.86	68.07	-18.85	-0.073,-0.367,-0.021,0.927	3.75,3.75,3.75	
+mixamorig:Spine	-53.26	72.57	-66.38	0.286,0.008,-0.023,0.958	23.53,23.53,23.53	
+mixamorig_LeftHandThumb4	-52.87	15.80	109.87	0.249,0.307,-0.870,-0.296	0.05,0.05,0.05	
+ID266	-51.91	15.06	89.26	-0.664,-0.242,-0.242,0.664	0.01,0.01,0.01	mesh=ID266;meshcol=ID266
+mixamorig:LeftHandIndex3	-19.64	40.82	-80.99	0.769,0.028,-0.353,0.532	23.53,23.53,23.53	
+head.001	-52.94	14.71	110.40	0.000,0.987,0.000,0.163	0.05,0.05,0.05	meshcol=-
+mixamorig_RightHandMiddle3	-52.75	15.66	109.62	-0.177,0.245,0.953,0.014	0.05,0.05,0.05	
+GOK_LCALF_01	-53.87	66.20	-18.85	0.000,-0.458,0.000,0.889	3.75,3.75,3.75	
+Cube (3)	-55.39	39.48	-62.57	0.000,0.000,0.000,1.000	2.00,0.07,2.00	mesh=Cube;box(1.00,1.00,1.00)
+mixamorig:LeftToeBase	-19.62	39.12	-82.36	-0.289,0.665,0.617,0.307	23.53,23.53,23.53	
+mixamorig:RightHandThumb4	-53.68	68.14	-18.64	0.865,-0.447,0.226,0.020	3.75,3.75,3.75	
+mixamorig:Spine	-19.48	40.40	-81.92	0.287,-0.051,-0.005,0.957	23.53,23.53,23.53	
+mixamorig:Hips	-53.89	67.87	-18.83	-0.059,-0.353,-0.050,0.932	3.75,3.75,3.75	
+mixamorig:LeftHandIndex3	-53.30	72.99	-65.44	0.746,0.061,-0.400,0.529	23.53,23.53,23.53	
+ID284	-51.91	15.06	89.26	-0.664,-0.242,-0.242,0.664	0.01,0.01,0.01	meshcol=-
+mixamorig_RightLeg	-53.17	15.66	109.57	0.997,0.039,-0.066,-0.000	0.05,0.05,0.05	
+Macarena Dance	-53.87	66.20	-18.85	-0.000,-0.458,-0.000,0.889	3.75,3.75,3.75	script=audio
+mixamorig:LeftToeBase	-53.45	71.30	-66.80	-0.250,0.683,0.633,0.265	23.53,23.53,23.53	
+mixamorig:RightArm	-53.65	68.79	-18.62	0.751,0.653,-0.091,-0.021	3.75,3.75,3.75	
+Tree.002	-35.88	15.06	33.94	0.000,0.000,0.000,1.000	1.00,1.00,1.00	mesh=Combined Mesh (root: scene);meshcol=Tree.002
+Tree.002 (1)	-51.50	15.06	12.35	0.000,0.000,0.000,1.000	2.00,2.00,2.00	mesh=Combined Mesh (root: scene);meshcol=Tree.002
+Tree.002 (2)	-42.16	15.06	53.60	0.000,0.000,0.000,1.000	1.00,1.00,1.00	mesh=Combined Mesh (root: scene);meshcol=Tree.002
+mixamorig:RightHandIndex1	-18.54	40.50	-81.79	-0.599,-0.383,0.440,-0.548	23.53,23.53,23.53	
+body2	-52.94	14.71	110.40	0.000,0.987,0.000,0.163	0.05,0.05,0.05	meshcol=-
+XGOK_SKULL_01	-53.87	66.20	-18.85	0.000,-0.458,0.000,0.889	3.75,3.75,3.75	
+mixamorig_LeftHandRing2	-52.78	15.67	109.83	0.180,-0.189,-0.899,-0.351	0.05,0.05,0.05	
+mixamorig:RightShoulder	-53.80	68.85	-18.78	0.764,0.274,-0.231,0.537	3.75,3.75,3.75	
+mixamorig_RightHandRing2	-52.82	15.70	109.61	-0.195,0.180,0.964,-0.022	0.05,0.05,0.05	
+mixamorig:RightHandIndex1	-52.31	72.67	-66.37	-0.571,-0.416,0.477,-0.523	23.53,23.53,23.53	
+0	-60.38	65.95	-30.14	0.116,-0.598,-0.151,0.778	54.39,54.39,54.39	mesh=0;meshcol=0
+mixamorig_LeftHandRing3	-52.80	15.64	109.83	0.098,-0.344,-0.899,-0.253	0.05,0.05,0.05	
+Ibai	-55.39	36.73	-62.57	0.000,0.000,0.000,1.000	2.00,5.51,2.00	mesh=Cube;box(1.00,1.00,1.00);script=audio;script=mover;script=Trampolin
+Plane	-52.94	14.71	110.40	0.000,0.987,0.000,0.163	0.05,0.05,0.05	meshcol=-
+mixamorig_Spine	-52.96	16.11	110.46	0.111,0.949,-0.231,0.184	0.05,0.05,0.05	
+mixamorig_LeftUpLeg	-52.81	15.75	110.50	0.732,0.241,0.309,-0.558	0.05,0.05,0.05	
+mixamorig_LeftToeBase	-52.33	14.71	109.89	0.612,0.269,0.274,-0.691	0.05,0.05,0.05	
+mixamorig:RightHand	-52.61	72.76	-66.40	-0.595,-0.406,0.531,-0.446	23.53,23.53,23.53	
+mixamorig:RightHandThumb3	-53.66	68.19	-18.65	0.865,-0.447,0.226,0.020	3.75,3.75,3.75	
+VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00	-52.53	66.63	18.42	-0.662,0.472,-0.199,0.547	0.02,0.02,0.02	mesh=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;meshcol=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;script=Trampolin
+VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00	-46.46	66.63	20.84	-0.301,-0.255,-0.869,0.299	0.02,0.02,0.02	mesh=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;meshcol=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;script=Trampolin
+VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00	-47.82	66.63	27.62	-0.000,0.696,0.000,-0.718	0.02,0.02,0.02	mesh=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;meshcol=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;script=Trampolin
+VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00	-52.71	66.63	12.54	0.146,0.572,-0.545,0.596	0.02,0.02,0.02	mesh=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;meshcol=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;script=Trampolin
+VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00	-40.45	66.63	4.50	-0.772,-0.374,0.294,0.421	0.02,0.02,0.02	mesh=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;meshcol=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;script=Trampolin
+VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00	-45.14	66.63	17.04	0.000,0.985,0.000,0.175	0.02,0.02,0.02	mesh=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;meshcol=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;script=Trampolin
+VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00	-51.53	66.63	6.61	0.000,0.000,0.000,1.000	0.02,0.02,0.02	mesh=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;meshcol=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;script=Trampolin
+VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00	-52.36	66.63	23.89	0.074,0.914,0.156,-0.366	0.02,0.02,0.02	mesh=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;meshcol=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;script=Trampolin
+VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00	-54.04	66.63	28.66	0.000,0.000,0.000,1.000	0.02,0.02,0.02	mesh=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;meshcol=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;script=Trampolin
+VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00	-41.71	66.63	8.59	0.000,0.690,0.000,0.724	0.02,0.02,0.02	mesh=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;meshcol=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;script=Trampolin
+VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00	-46.33	66.63	6.64	-0.820,0.518,0.243,0.016	0.02,0.02,0.02	mesh=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;meshcol=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;script=Trampolin
+VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00	-49.18	66.63	12.43	-0.000,0.696,0.000,-0.718	0.02,0.02,0.02	mesh=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;meshcol=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;script=Trampolin
+VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00	-44.33	66.63	25.49	0.000,-0.386,0.000,0.923	0.02,0.02,0.02	mesh=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;meshcol=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;script=Trampolin
+VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00	-42.32	66.63	13.03	-0.186,0.391,0.614,0.660	0.02,0.02,0.02	mesh=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;meshcol=VolleyballBall__BodyMT00_VolleyballBall__BodyMT00_BodyMT00;script=Trampolin
+mixamorig_RightHandThumb3	-52.79	15.78	109.78	-0.144,-0.129,0.975,-0.113	0.05,0.05,0.05	
+mixamorig:LeftShoulder	-53.28	72.99	-66.12	0.647,-0.582,0.329,0.368	23.53,23.53,23.53	
+Cylinder.002	-59.61	15.06	43.96	-0.431,0.561,0.561,0.431	0.50,0.50,0.50	box(0.31,0.50,1.19)
+mixamorig:LeftHandThumb3	-54.17	68.16	-19.04	0.883,0.010,0.145,0.445	3.75,3.75,3.75	
+mixamorig_RightHandThumb2	-52.83	15.87	109.78	-0.207,-0.078,0.969,-0.110	0.05,0.05,0.05	
+mixamorig:LeftHand	-54.07	68.35	-19.23	0.828,-0.267,0.122,0.478	3.75,3.75,3.75	
+mixamorig:RightHand	-18.83	40.58	-81.86	-0.627,-0.378,0.493,-0.470	23.53,23.53,23.53	
+mixamorig:LeftHandIndex1	-54.24	68.23	-18.99	0.845,-0.262,0.212,0.415	3.75,3.75,3.75	
+Cube (2)	-55.39	36.82	-63.60	0.000,0.707,0.000,0.707	0.03,5.18,1.94	mesh=Cube;box(1.00,1.00,1.00)
+mixamorig_RightHandMiddle1	-52.77	15.76	109.61	-0.149,-0.034,0.980,-0.130	0.05,0.05,0.05	
+sb	14.76	40.93	-44.79	0.000,-0.918,0.000,0.397	4.00,4.00,4.00	mesh=sb;meshcol=sb
+mixamorig:LeftShoulder	-19.54	40.81	-81.67	0.625,-0.603,0.369,0.331	23.53,23.53,23.53	
+mixamorig_Hips	-52.95	15.88	110.45	0.001,0.985,-0.025,0.168	0.05,0.05,0.05	meshcol=-
+mixamorig:RightHandIndex3	-53.75	68.12	-18.51	0.909,-0.260,0.307,0.111	3.75,3.75,3.75	
+mesh_id51.001	-46.25	17.00	44.64	0.000,-0.896,0.000,-0.445	5.10,5.10,5.10	mesh=mesh_id51.001
+mixamorig:RightHandIndex4	-53.77	68.09	-18.50	0.909,-0.260,0.307,0.111	3.75,3.75,3.75	
+mixamorig_RightHandRing3	-52.83	15.66	109.62	-0.207,0.318,0.923,0.062	0.05,0.05,0.05	
+mixamorig_RightForeArm	-53.19	16.45	109.99	0.257,-0.184,0.896,-0.313	0.05,0.05,0.05	
+mixamorig:RightToeBase	-53.58	66.20	-18.41	-0.277,0.685,0.651,0.177	3.75,3.75,3.75	
+mixamorig:HeadTop_End	-19.55	42.11	-81.19	0.030,-0.068,0.025,0.997	23.53,23.53,23.53	
+ID300	-51.91	15.06	89.26	-0.664,-0.242,-0.242,0.664	0.01,0.01,0.01	meshcol=-
+mixamorig_LeftToe_End	-52.22	14.73	109.77	0.612,0.269,0.274,-0.691	0.05,0.05,0.05	
+mixamorig:LeftUpLeg	-19.58	40.19	-81.99	-0.240,0.097,0.964,0.055	23.53,23.53,23.53	
+mixamorig:RightHandIndex2	-18.49	40.49	-81.77	-0.768,-0.149,0.585,-0.213	23.53,23.53,23.53	
+mixamorig:LeftLeg	-19.67	39.61	-81.89	-0.256,-0.694,0.673,-0.015	23.53,23.53,23.53	
+mixamorig_LeftHandMiddle3	-52.85	15.68	109.79	0.143,-0.127,-0.926,-0.325	0.05,0.05,0.05	
+Toilet01	-18.40	111.01	-39.20	0.000,-0.663,0.000,0.749	0.20,0.20,0.20	mesh=Toilet01
+mixamorig:LeftForeArm	-54.18	68.63	-19.48	0.695,0.344,0.613,0.151	3.75,3.75,3.75	
+mixamorig:LeftHandIndex4	-54.30	68.14	-18.90	0.915,-0.057,0.136,0.375	3.75,3.75,3.75	
+mixamorig:HeadTop_End	-53.24	74.28	-65.65	0.032,-0.006,0.023,0.999	23.53,23.53,23.53	
+mixamorig:Neck	-53.89	68.88	-18.85	0.047,-0.382,0.038,0.922	3.75,3.75,3.75	
+mixamorig:LeftUpLeg	-53.36	72.36	-66.44	-0.179,0.100,0.977,0.049	23.53,23.53,23.53	
+mixamorig:RightHandIndex2	-52.26	72.67	-66.36	-0.730,-0.162,0.632,-0.204	23.53,23.53,23.53	
+Billiards	-33.47	15.81	89.74	0.000,-0.511,0.000,0.860	1.00,1.00,1.00	mesh=Combined Mesh (root: scene)
+jellyfish	14.76	40.93	-44.79	0.000,-0.918,0.000,0.397	4.00,4.00,4.00	mesh=jellyfish;meshcol=jellyfish
+mixamorig:LeftLeg	-53.44	71.79	-66.33	-0.213,-0.693,0.688,0.028	23.53,23.53,23.53	
+mixamorig:LeftLeg	-54.27	66.96	-18.95	-0.427,-0.298,0.853,-0.040	3.75,3.75,3.75	
+mixamorig:LeftHandMiddle3	-54.28	68.13	-18.98	0.927,-0.014,0.036,0.373	3.75,3.75,3.75	
+mixamorig:LeftUpLeg	-54.08	67.77	-19.00	-0.371,0.070,0.921,0.091	3.75,3.75,3.75	
+mixamorig:RightHandIndex2	-53.72	68.16	-18.51	0.910,-0.246,0.289,0.167	3.75,3.75,3.75	
+mixamorig:HeadTop_End	-53.85	69.51	-18.99	-0.119,-0.463,0.023,0.878	3.75,3.75,3.75	
+mixamorig:Neck	-53.21	73.02	-66.10	0.252,0.039,-0.035,0.966	23.53,23.53,23.53	
+mixamorig:LeftHandIndex4	-53.28	72.95	-65.40	0.746,0.061,-0.400,0.529	23.53,23.53,23.53	
+Cylinder	-59.61	15.06	43.96	-0.431,0.561,0.561,0.431	0.50,0.50,0.50	box(2.80,0.96,3.15)
+mixamorig:RightHandIndex4	-18.45	40.36	-81.77	-0.781,-0.131,0.608,-0.059	23.53,23.53,23.53	
+ID280	-51.91	15.06	89.26	-0.664,-0.242,-0.242,0.664	0.01,0.01,0.01	meshcol=-
+mixamorig:LeftForeArm	-53.69	72.93	-65.96	0.743,0.162,-0.080,0.645	23.53,23.53,23.53	
+mixamorig:RightHandMiddle2	-53.66	68.20	-18.54	0.901,-0.238,0.326,0.157	3.75,3.75,3.75	
+mixamorig_LeftHandRing4	-52.81	15.63	109.84	0.098,-0.344,-0.899,-0.253	0.05,0.05,0.05	
+mixamorig:RightToeBase	-19.19	39.16	-81.33	0.309,0.723,0.606,-0.125	23.53,23.53,23.53	
+arms	-52.94	14.71	110.40	0.000,0.987,0.000,0.163	0.05,0.05,0.05	meshcol=-
+ID256	-51.91	15.06	89.26	-0.664,-0.242,-0.242,0.664	0.01,0.01,0.01	mesh=ID256;meshcol=ID256
+mixamorig:LeftHandIndex4	-19.63	40.77	-80.95	0.769,0.028,-0.353,0.532	23.53,23.53,23.53	
+mixamorig:Neck	-19.47	40.84	-81.64	0.253,-0.021,-0.019,0.967	23.53,23.53,23.53	
+mixamorig:RightToeBase	-52.90	71.34	-65.83	0.346,0.713,0.585,-0.170	23.53,23.53,23.53	
+mixamorig:RightHandIndex4	-52.21	72.54	-66.36	-0.741,-0.135,0.655,-0.051	23.53,23.53,23.53	
+Character.001	-45.37	16.87	44.66	-0.000,0.924,-0.000,0.383	1.00,1.00,1.00	rigidbody;capsule(0.30,1.75);script=SUPERCharacterAIO
+Camera	-45.37	17.47	44.66	-0.000,0.924,0.000,0.383	1.00,1.00,1.00	
+mixamorig:LeftForeArm	-19.96	40.76	-81.56	0.746,0.121,-0.033,0.654	23.53,23.53,23.53	
+mixamorig:RightHandIndex3	-52.22	72.60	-66.35	-0.741,-0.135,0.655,-0.051	23.53,23.53,23.53	
+Sphere	-41.66	39.81	-80.95	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	7.89	42.89	-53.96	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-68.82	66.62	1.94	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-55.59	66.62	-5.27	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	4.61	56.04	31.86	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-37.87	80.36	-86.75	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-60.75	34.62	-30.03	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-68.87	66.62	7.51	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-55.73	66.62	-16.42	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	9.77	41.52	-40.62	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-57.73	35.70	-57.00	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	9.80	41.52	-36.33	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-56.52	23.76	-15.86	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-43.77	18.44	-6.18	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-41.44	78.68	-86.86	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-56.53	35.70	-58.05	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-47.56	20.32	-10.00	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-47.71	16.34	18.26	0.000,-0.175,-0.000,0.984	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-22.48	56.04	31.81	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-48.73	27.01	-11.27	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	1.54	41.81	-65.79	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-60.66	34.62	-34.22	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-60.38	67.95	-30.39	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-3.47	39.75	-72.29	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-46.79	16.48	16.06	0.000,-0.850,-0.000,0.527	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	9.43	41.52	-43.92	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-7.53	39.59	-75.98	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-30.84	81.79	-74.72	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-63.33	66.62	-5.47	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-60.52	34.47	-45.62	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	9.71	41.52	-32.48	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-37.33	80.36	-78.31	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-46.90	38.05	-78.66	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-46.55	77.24	-86.51	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-62.64	34.47	-41.51	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-42.82	16.48	6.61	0.000,-0.850,-0.000,0.527	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-51.63	29.45	-14.23	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-51.37	26.23	-14.49	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	3.20	56.04	2.16	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-50.92	75.57	-86.78	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-51.57	36.21	-76.08	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-69.08	66.62	-4.71	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-9.54	39.59	-76.64	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-5.71	39.59	-74.81	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-63.00	66.62	7.75	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-45.79	16.34	13.70	0.000,-0.175,-0.000,0.984	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-0.96	40.81	-69.30	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-22.82	56.04	2.35	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-55.44	66.62	-10.64	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-55.15	73.36	-87.02	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-36.30	81.79	-75.00	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-43.74	16.34	8.81	0.000,-0.175,-0.000,0.984	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-44.87	16.48	11.50	0.000,-0.850,-0.000,0.527	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+Sphere	-60.71	36.27	-36.92	0.000,-0.729,-0.000,0.685	0.38,1.00,1.46	mesh=Sphere;sphere(0.50)
+mixamorig_RightArm	-53.10	16.73	110.03	0.332,-0.116,0.928,0.121	0.05,0.05,0.05	
+mixamorig:LeftHandIndex1	-53.40	72.98	-65.53	0.309,0.323,-0.320,0.835	23.53,23.53,23.53	
+mixamorig:LeftHand	-53.60	72.90	-65.72	0.528,0.224,-0.301,0.762	23.53,23.53,23.53	
+mixamorig:RightHandIndex3	-18.45	40.42	-81.76	-0.781,-0.131,0.608,-0.059	23.53,23.53,23.53	
+mixamorig:LeftShoulder	-53.97	68.84	-18.93	0.379,-0.617,0.649,0.232	3.75,3.75,3.75	
+XGOK_L00_NOR_FACE_01	-53.87	66.20	-18.85	0.000,-0.458,0.000,0.889	3.75,3.75,3.75	
+mixamorig:LeftHandIndex1	-19.73	40.80	-81.09	0.328,0.270,-0.300,0.854	23.53,23.53,23.53	
+Bench	-27.66	15.06	80.49	-0.000,-0.169,-0.000,0.986	1.00,1.00,1.00	meshcol=-
+Bench (1)	-52.88	15.06	110.47	-0.000,-0.971,-0.000,-0.240	1.00,1.00,1.00	meshcol=-
+ID292	-51.91	15.06	89.26	-0.664,-0.242,-0.242,0.664	0.01,0.01,0.01	meshcol=-
+mixamorig:LeftHand	-19.90	40.73	-81.30	0.546,0.177,-0.268,0.774	23.53,23.53,23.53	
+mixamorig_LeftHandMiddle2	-52.82	15.71	109.79	0.174,-0.041,-0.920,-0.348	0.05,0.05,0.05	
+mixamorig:RightHand	-53.48	68.44	-18.62	0.884,-0.263,0.303,0.239	3.75,3.75,3.75	
+illojuan (4)	6.29	41.77	-29.99	-0.000,0.200,-0.000,0.980	1.50,1.50,1.50	mesh=Sphere;sphere(0.50);script=audio
+illojuan (7)	-35.20	16.03	103.40	-0.000,0.792,-0.000,0.610	1.50,1.50,1.50	mesh=Sphere;rigidbody;sphere(0.50);script=audio
+illojuan (5)	-34.10	66.15	14.54	-0.000,0.452,-0.000,0.892	1.50,1.50,1.50	mesh=Sphere;sphere(0.50);script=audio
+illojuan	-50.23	15.85	13.71	-0.000,-0.300,-0.000,0.954	1.50,1.50,1.50	mesh=Sphere;sphere(0.50);script=audio
+illojuan (1)	-61.83	34.73	-58.95	-0.000,-0.265,-0.000,0.964	1.50,1.50,1.50	mesh=Sphere;sphere(0.50);script=audio
+illojuan (2)	-60.25	35.06	-41.54	-0.000,0.951,-0.000,-0.308	1.50,1.50,1.50	mesh=Sphere;sphere(0.50);script=audio
+illojuan (8)	-66.00	15.81	61.82	-0.000,-0.952,-0.000,-0.305	1.50,1.50,1.50	mesh=Sphere;sphere(0.50);script=audio
+illojuan (6)	-20.87	82.04	-74.38	-0.000,0.979,-0.000,0.203	1.50,1.50,1.50	mesh=Sphere;sphere(0.50);script=audio
+illojuan (3)	-34.32	39.84	-81.07	-0.000,-0.881,-0.000,0.473	1.50,1.50,1.50	mesh=Sphere;sphere(0.50);script=audio
+tengris (2)	-8.08	57.04	19.14	0.000,0.000,0.000,1.000	3.00,3.00,3.00	mesh=Cube;box(1.00,1.00,1.00);script=audio;script=dispara
+tengris (1)	-8.08	56.04	19.14	0.000,0.000,0.000,1.000	1.00,1.00,1.00	mesh=Cube;box(1.00,1.00,1.00);script=dispara
+ID246	-51.91	15.06	89.26	-0.664,-0.242,-0.242,0.664	0.01,0.01,0.01	mesh=ID246;meshcol=ID246
+mixamorig:RightLeg	-19.32	39.82	-81.42	-0.073,-0.112,0.991,0.003	23.53,23.53,23.53	
+default	-52.88	15.06	110.47	0.000,-0.971,0.000,-0.240	1.00,1.00,1.00	mesh=default;meshcol=default
+default	-27.66	15.06	80.49	0.000,-0.169,0.000,0.986	1.00,1.00,1.00	mesh=default;meshcol=default
+GOK_L00_LHAND_01	-53.87	66.20	-18.85	0.000,-0.458,0.000,0.889	3.75,3.75,3.75	
+mixamorig_RightHandThumb1	-52.90	16.01	109.78	-0.242,-0.039,0.923,-0.298	0.05,0.05,0.05	
+mixamorig_RightUpLeg	-53.11	15.75	110.41	0.745,-0.034,-0.013,-0.666	0.05,0.05,0.05	
+mixamorig_RightShoulder	-52.83	16.77	110.03	0.317,-0.268,0.686,0.597	0.05,0.05,0.05	
+mixamorig_LeftHand	-52.53	16.11	110.09	0.202,0.212,-0.899,-0.325	0.05,0.05,0.05	
+mixamorig_Neck	-52.68	16.82	109.97	0.104,0.913,-0.364,0.155	0.05,0.05,0.05	
+mixamorig:RightLeg	-53.04	72.00	-65.90	-0.011,-0.112,0.994,0.010	23.53,23.53,23.53	
+mixamorig_LeftHandMiddle4	-52.87	15.65	109.80	0.143,-0.127,-0.926,-0.325	0.05,0.05,0.05	
+unamed	-20.43	39.09	-81.78	0.000,0.000,0.000,1.000	23.53,23.53,23.53	
+mixamorig:Spine2	-53.23	72.85	-66.21	0.269,0.050,-0.042,0.961	23.53,23.53,23.53	
+Agencia (1)	16.15	46.34	-12.52	-0.000,0.992,-0.000,0.130	2.00,2.00,2.00	mesh=Cube;box(1.00,1.00,1.00);script=audio;script=morirte;script=agencia
+Agencia	12.28	46.34	-12.49	-0.000,-0.604,-0.000,0.797	2.00,2.00,2.00	mesh=Cube;box(1.00,1.00,1.00);script=morirte;script=agencia
+mesh_id32.001	-46.25	17.00	44.64	0.000,-0.896,0.000,-0.445	5.10,5.10,5.10	mesh=mesh_id32.001
+(unnamed)_0	-47.10	15.06	131.50	0.000,0.707,0.000,0.707	0.30,0.30,0.30	mesh=(unnamed)_0;meshcol=(unnamed)_0
+(unnamed)_0	-17.10	15.06	131.90	0.000,-0.711,0.000,0.703	0.30,0.30,0.30	mesh=(unnamed)_0;meshcol=(unnamed)_0
+unamed	-54.18	71.27	-66.13	0.000,0.062,0.000,0.998	23.53,23.53,23.53	
+untitled (7)	-44.33	66.63	25.49	-0.000,-0.386,-0.000,0.923	0.02,0.02,0.02	meshcol=-
+untitled (5)	-41.71	66.63	8.59	-0.000,0.690,-0.000,0.724	0.02,0.02,0.02	meshcol=-
+untitled (6)	-46.33	66.63	6.64	-0.820,0.518,0.243,0.016	0.02,0.02,0.02	meshcol=-
+untitled (8)	-49.18	66.63	12.43	-0.000,0.696,-0.000,-0.718	0.02,0.02,0.02	meshcol=-
+untitled (1)	-42.32	66.63	13.03	-0.186,0.391,0.614,0.660	0.02,0.02,0.02	meshcol=-
+untitled (11)	-52.53	66.63	18.42	-0.662,0.472,-0.199,0.547	0.02,0.02,0.02	meshcol=-
+untitled (2)	-46.46	66.63	20.84	-0.301,-0.255,-0.869,0.299	0.02,0.02,0.02	meshcol=-
+untitled (3)	-45.14	66.63	17.04	-0.000,0.985,-0.000,0.175	0.02,0.02,0.02	meshcol=-
+untitled (13)	-51.53	66.63	6.61	0.000,-0.000,-0.000,1.000	0.02,0.02,0.02	meshcol=-
+untitled (14)	-54.04	66.63	28.66	0.000,-0.000,-0.000,1.000	0.02,0.02,0.02	meshcol=-
+untitled (12)	-52.36	66.63	23.89	0.074,0.914,0.156,-0.366	0.02,0.02,0.02	meshcol=-
+untitled (9)	-47.82	66.63	27.62	-0.000,0.696,-0.000,-0.718	0.02,0.02,0.02	meshcol=-
+untitled (4)	-40.45	66.63	4.50	-0.772,-0.374,0.294,0.421	0.02,0.02,0.02	meshcol=-
+untitled (10)	-52.71	66.63	12.54	0.146,0.572,-0.545,0.596	0.02,0.02,0.02	meshcol=-
+mixamorig:RightUpLeg	-53.71	67.74	-18.66	-0.314,0.157,0.936,-0.022	3.75,3.75,3.75	
+XGOK_SKULL_02	-53.87	66.20	-18.85	0.000,-0.458,0.000,0.889	3.75,3.75,3.75	
+mixamorig:Spine2	-19.48	40.67	-81.74	0.271,-0.010,-0.026,0.962	23.53,23.53,23.53	
+mixamorig_LeftHandIndex1	-52.82	15.80	109.83	0.209,0.130,-0.911,-0.332	0.05,0.05,0.05	
+mixamorig:RightUpLeg	-53.14	72.36	-66.36	-0.030,0.429,0.896,-0.109	23.53,23.53,23.53	
+mixamorig_LeftShoulder	-52.62	16.74	110.10	0.579,-0.030,-0.570,0.582	0.05,0.05,0.05	
+mixamorig:RightHandThumb1	-53.56	68.34	-18.64	0.937,-0.214,0.255,0.104	3.75,3.75,3.75	
+mixamorig_HeadTop_End	-52.54	17.38	109.73	0.060,0.980,-0.093,0.165	0.05,0.05,0.05	
+mixamorig:RightUpLeg	-19.36	40.18	-81.88	-0.086,0.435,0.893,-0.082	23.53,23.53,23.53	
+mixamorig:Spine2	-53.85	68.58	-18.88	0.063,-0.367,0.050,0.927	3.75,3.75,3.75	
+mixamorig_LeftForeArm	-52.40	16.37	110.36	0.378,0.253,-0.829,-0.325	0.05,0.05,0.05	
+mixamorig:LeftHandMiddle2	-54.24	68.19	-19.04	0.910,-0.119,0.070,0.391	3.75,3.75,3.75	
+mixamorig_RightToeBase	-53.15	14.71	109.25	0.672,-0.044,-0.071,-0.736	0.05,0.05,0.05	
+mixamorig_RightToe_End	-53.18	14.73	109.09	0.672,-0.044,-0.071,-0.736	0.05,0.05,0.05	
+mixamorig_RightFoot	-53.11	14.95	109.57	0.894,-0.041,-0.036,-0.445	0.05,0.05,0.05	
+GOK_L00_RHAND_01	-53.87	66.20	-18.85	0.000,-0.458,0.000,0.889	3.75,3.75,3.75	
+ID296	-51.91	15.06	89.26	-0.664,-0.242,-0.242,0.664	0.01,0.01,0.01	meshcol=-
+mixamorig:RightLeg	-53.76	66.95	-18.41	-0.264,-0.248,0.914,-0.185	3.75,3.75,3.75	
+GOK_RCALF_01	-53.87	66.20	-18.85	0.000,-0.458,0.000,0.889	3.75,3.75,3.75	
+mixamorig_LeftHandThumb3	-52.85	15.84	109.92	0.249,0.307,-0.870,-0.296	0.05,0.05,0.05	
+ID276	-51.91	15.06	89.26	-0.664,-0.242,-0.242,0.664	0.01,0.01,0.01	meshcol=-
+mixamorig:LeftHandMiddle4	-54.29	68.06	-18.92	0.927,-0.014,0.036,0.373	3.75,3.75,3.75	
+mixamorig_RightHandIndex4	-52.72	15.64	109.66	-0.186,0.184,0.965,-0.033	0.05,0.05,0.05	
+hair.005	-52.94	14.71	110.40	0.000,0.987,0.000,0.163	0.05,0.05,0.05	meshcol=-
+mixamorig:RightHandMiddle4	-53.76	68.05	-18.53	0.902,-0.240,0.346,0.095	3.75,3.75,3.75	
+mixamorig:LeftHandThumb4	-54.20	68.12	-18.99	0.883,0.010,0.145,0.445	3.75,3.75,3.75	
+MiniVan	-62.65	19.96	96.11	0.058,0.878,-0.235,0.414	3.00,3.00,3.00	mesh=Combined Mesh (root: scene);box(4.18,1.75,1.52)
+XGOK_BODY_01	-53.87	66.20	-18.85	0.000,-0.458,0.000,0.889	3.75,3.75,3.75	
+ID236	-51.91	15.06	89.26	-0.664,-0.242,-0.242,0.664	0.01,0.01,0.01	mesh=ID236;meshcol=ID236
+mixamorig_RightHandRing1	-52.84	15.76	109.60	-0.176,0.007,0.977,-0.121	0.05,0.05,0.05	
+mixamorig_RightHandThumb4	-52.77	15.72	109.76	-0.144,-0.129,0.975,-0.113	0.05,0.05,0.05	
+mixamorig:LeftArm	-54.14	68.81	-19.08	0.689,-0.354,0.481,-0.411	3.75,3.75,3.75	
+mixamorig_RightHandMiddle4	-52.76	15.63	109.64	-0.177,0.245,0.953,0.014	0.05,0.05,0.05	
+mixamorig:RightForeArm	-53.22	68.73	-18.69	0.928,-0.361,-0.054,0.079	3.75,3.75,3.75	
+mixamorig:LeftFoot	-19.42	39.59	-82.50	-0.253,0.188,0.937,0.149	23.53,23.53,23.53	
+mixamorig:LeftHandIndex2	-54.27	68.20	-18.96	0.893,-0.119,0.155,0.405	3.75,3.75,3.75	
+mixamorig_Spine2	-52.79	16.58	110.19	0.104,0.909,-0.372,0.155	0.05,0.05,0.05	
+mixamorig:Head	-53.18	73.25	-65.91	0.032,-0.006,0.023,0.999	23.53,23.53,23.53	
+mixamorig_LeftHandMiddle1	-52.79	15.74	109.81	0.213,0.067,-0.916,-0.333	0.05,0.05,0.05	
+mixamorig:RightHandMiddle1	-53.56	68.33	-18.58	0.890,-0.258,0.311,0.211	3.75,3.75,3.75	
+mixamorig:Head	-19.47	41.08	-81.45	0.030,-0.068,0.025,0.997	23.53,23.53,23.53	
+mixamorig:RightHandThumb2	-53.62	68.26	-18.64	0.932,-0.235,0.269,0.062	3.75,3.75,3.75	
+mixamorig:LeftFoot	-53.27	71.77	-66.97	-0.194,0.197,0.951,0.137	23.53,23.53,23.53	
+ID304	-51.91	15.06	89.26	-0.664,-0.242,-0.242,0.664	0.01,0.01,0.01	meshcol=-
+mixamorig:Spine1	-53.84	68.31	-18.87	-0.005,-0.368,0.015,0.930	3.75,3.75,3.75	
+mixamorig_Head	-52.64	16.91	109.87	0.060,0.980,-0.093,0.165	0.05,0.05,0.05	
+mixamorig:LeftHandMiddle1	-54.13	68.29	-19.16	0.851,-0.317,0.154,0.389	3.75,3.75,3.75	
+mixamorig_LeftFoot	-52.57	14.95	110.13	0.831,0.183,0.308,-0.425	0.05,0.05,0.05	
+mixamorig_RightHandIndex2	-52.73	15.72	109.64	-0.179,0.073,0.979,-0.071	0.05,0.05,0.05	
+mixamorig_RightHandIndex3	-52.72	15.67	109.65	-0.186,0.184,0.965,-0.033	0.05,0.05,0.05	
+mixamorig_LeftHandThumb2	-52.79	15.90	109.96	0.197,0.204,-0.898,-0.336	0.05,0.05,0.05	
+mixamorig:LeftToe_End	-19.77	39.14	-82.23	-0.289,0.665,0.617,0.307	23.53,23.53,23.53	
+mixamorig:RightToe_End	-52.81	71.35	-65.74	0.346,0.713,0.585,-0.170	23.53,23.53,23.53	
+Tree.001 (1)	-65.00	14.98	21.84	0.000,0.000,0.000,1.000	1.00,1.00,1.00	mesh=Combined Mesh (root: scene);meshcol=Tree.001
+Tree.001 (2)	-57.70	14.98	50.28	0.000,0.000,0.000,1.000	1.00,1.00,1.00	mesh=Combined Mesh (root: scene);meshcol=Tree.001
+Tree.001	-34.91	14.98	13.54	0.000,0.000,0.000,1.000	1.00,1.00,1.00	mesh=Combined Mesh (root: scene);meshcol=Tree.001
+mixamorig:LeftToe_End	-53.59	71.32	-66.65	-0.250,0.683,0.633,0.265	23.53,23.53,23.53	
+untitled	-41.62	67.02	20.40	0.529,-0.023,0.804,0.269	0.02,0.02,0.02	meshcol=-
+mixamorig:RightToe_End	-19.12	39.17	-81.23	0.309,0.723,0.606,-0.125	23.53,23.53,23.53	
+mixamorig_LeftHandIndex3	-52.88	15.72	109.79	0.180,0.044,-0.925,-0.332	0.05,0.05,0.05	
+mixamorig:RightFoot	-53.45	66.42	-18.64	-0.179,0.402,0.887,0.139	3.75,3.75,3.75	
+mixamorig:RightFoot	-53.05	71.50	-66.02	0.309,0.444,0.830,-0.138	23.53,23.53,23.53	
+default	1.28	41.13	-66.25	-0.101,0.340,0.037,0.934	1.99,1.00,7.59	mesh=default;meshcol=default
+default	702.24	60.80	-547.68	0.000,0.971,0.000,0.239	1.00,1.00,1.00	mesh=default
+XGOK_BODY_02	-53.87	66.20	-18.85	0.000,-0.458,0.000,0.889	3.75,3.75,3.75	
+mixamorig:LeftHandThumb1	-54.12	68.26	-19.17	0.835,-0.171,0.212,0.479	3.75,3.75,3.75	
+mixamorig:LeftToe_End	-54.41	66.20	-19.05	-0.280,0.597,0.653,0.371	3.75,3.75,3.75	
+mesh_id1.001	-46.25	17.00	44.64	0.000,-0.896,0.000,-0.445	5.10,5.10,5.10	mesh=mesh_id1.001
+mixamorig_LeftLeg	-52.22	15.53	109.93	0.882,-0.190,0.359,0.238	0.05,0.05,0.05	
+mixamorig:RightFoot	-19.32	39.33	-81.53	0.257,0.451,0.847,-0.111	23.53,23.53,23.53	
+mecago	-59.61	15.06	43.96	0.000,0.793,0.000,0.609	0.50,0.50,0.50	box(1.00,1.00,1.00)
+mixamorig:RightToe_End	-53.67	66.20	-18.30	-0.277,0.685,0.651,0.177	3.75,3.75,3.75	
+Cylinder.001	-59.61	15.06	43.96	-0.431,0.561,0.561,0.431	0.50,0.50,0.50	box(2.42,0.87,2.39)
+mixamorig_LeftHandRing1	-52.76	15.70	109.83	0.241,-0.025,-0.916,-0.320	0.05,0.05,0.05	
+mixamorig_RightHand	-53.00	16.16	109.80	-0.173,-0.215,0.941,-0.197	0.05,0.05,0.05	
+mixamorig:Spine1	-53.25	72.70	-66.30	0.277,0.029,-0.032,0.960	23.53,23.53,23.53	
+Cylinder.003	-59.61	15.06	43.96	-0.431,0.561,0.561,0.431	0.50,0.50,0.50	box(0.24,0.26,0.39)
+mixamorig:LeftFoot	-54.06	66.42	-19.26	-0.515,0.383,0.741,0.198	3.75,3.75,3.75	
+mixamorig:LeftHandIndex2	-19.69	40.83	-81.07	0.583,0.178,-0.363,0.705	23.53,23.53,23.53	
+mixamorig_RightHandMiddle2	-52.76	15.71	109.61	-0.166,0.123,0.977,-0.049	0.05,0.05,0.05	
+mixamorig_RightHandRing4	-52.84	15.62	109.65	-0.207,0.318,0.923,0.062	0.05,0.05,0.05	
+mixamorig:RightForeArm	-19.06	40.71	-81.90	-0.694,-0.350,0.505,-0.375	23.53,23.53,23.53	
+mixamorig:LeftArm	-19.70	40.81	-81.67	0.663,-0.383,0.383,0.517	23.53,23.53,23.53	
+mixamorig:LeftHandThumb2	-54.14	68.21	-19.10	0.880,-0.097,0.179,0.428	3.75,3.75,3.75	
+mixamorig:Spine1	-19.48	40.53	-81.84	0.279,-0.030,-0.015,0.960	23.53,23.53,23.53	
+Cube (1)	-56.43	36.82	-62.54	0.000,0.000,0.000,1.000	0.03,5.18,1.94	mesh=Cube;box(1.00,1.00,1.00)
+mixamorig:Head	-53.90	68.94	-18.85	-0.119,-0.463,0.023,0.878	3.75,3.75,3.75	
+mesh_id47.001	-46.25	17.00	44.64	0.000,-0.896,0.000,-0.445	5.10,5.10,5.10	mesh=mesh_id47.001
+mixamorig_Spine1	-52.88	16.34	110.36	0.108,0.932,-0.302,0.169	0.05,0.05,0.05	
+mixamorig:LeftHandIndex2	-53.36	73.01	-65.51	0.559,0.221,-0.399,0.693	23.53,23.53,23.53	
+mixamorig:RightForeArm	-52.84	72.88	-66.41	-0.661,-0.373,0.547,-0.352	23.53,23.53,23.53	
+mixamorig:LeftArm	-53.44	72.98	-66.11	0.686,-0.350,0.341,0.540	23.53,23.53,23.53	

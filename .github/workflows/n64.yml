@@ -1,0 +1,17 @@
+name: n64
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  rom:
+    runs-on: ubuntu-latest
+    container: ghcr.io/dragonminded/libdragon:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compilar ROM
+        run: make
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Guillem_N64
+          path: guillem.z64
