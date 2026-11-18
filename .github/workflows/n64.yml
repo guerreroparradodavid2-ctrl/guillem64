@@ -6,18 +6,33 @@ on:
 jobs:
   rom:
     runs-on: ubuntu-latest
-    container: ghcr.io/dragonminded/libdragon:preview
     steps:
       - uses: actions/checkout@v4
+
+      - name: Instalar dependencias
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential git python3 libpng-dev libusb-1.0-0-dev libftdi1-dev libzstd-dev
+
+      - name: Instalar toolchain MIPS64
+        run: |
+          curl -fL "https://github.com/DragonMinded/libdragon/releases/download/toolchain-continuous-prerelease/gcc-toolchain-mips64-amd64.deb" -o "$RUNNER_TEMP/toolchain.deb"
+          sudo dpkg -i "$RUNNER_TEMP/toolchain.deb"
+          echo "N64_INST=/opt/libdragon" >> "$GITHUB_ENV"
+          echo "/opt/libdragon/bin" >> "$GITHUB_PATH"
+          /opt/libdragon/bin/mips64-elf-gcc --version
 
       - name: Instalar libdragon preview
         run: |
           git clone --depth 1 --branch preview https://github.com/DragonMinded/libdragon.git /tmp/libdragon
           cd /tmp/libdragon
           ./build.sh --no-examples
+          test -f "$N64_INST/include/n64.mk"
 
-      - name: Compilar ROM
-        run: make
+      - name: Compilar Guillem
+        run: |
+          make clean
+          make
 
       - uses: actions/upload-artifact@v4
         with:
