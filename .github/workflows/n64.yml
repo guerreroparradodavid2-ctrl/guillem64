@@ -6,11 +6,19 @@ on:
 jobs:
   rom:
     runs-on: ubuntu-latest
-    container: ghcr.io/dragonminded/libdragon@sha256:af230c9150491d5d7559ad84e6c3a23f144d94940e5b615f7570397851fb0bc1
+    container: ghcr.io/dragonminded/libdragon:preview
     steps:
       - uses: actions/checkout@v4
+
+      - name: Instalar libdragon preview
+        run: |
+          git clone --depth 1 --branch preview https://github.com/DragonMinded/libdragon.git /tmp/libdragon
+          cd /tmp/libdragon
+          ./build.sh --no-examples
+
       - name: Compilar ROM
         run: make
+
       - uses: actions/upload-artifact@v4
         with:
           name: Guillem_N64
