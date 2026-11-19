@@ -23,7 +23,7 @@ jobs:
         run: |
           git clone --depth 1 https://github.com/DragonMinded/libdragon.git
           cd libdragon
-          sudo -E env "PATH=$PATH:/opt/libdragon/bin" ./build.sh
+          sudo env N64_INST=/opt/libdragon "PATH=$PATH:/opt/libdragon/bin" ./build.sh
       - name: Compilar ROM
         run: |
           export PATH=$PATH:/opt/libdragon/bin
