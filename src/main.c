@@ -7,6 +7,8 @@
 #include <string.h>
 #include "game.h"
 #include "assets.h"
+#include "music.h"
+#include "title.h"
 
 #define W 160
 #define H 120
@@ -34,6 +36,56 @@ static void set_camera(const float eye[3], const float tgt[3]) {
     r[0] /= l; r[2] /= l;
     float u[3] = { r[1]*f[2]-r[2]*f[1], r[2]*f[0]-r[0]*f[2], r[0]*f[1]-r[1]*f[0] };
     for (int i = 0; i < 3; i++) { cam_p[i] = eye[i]; cam_r[i] = r[i]; cam_u[i] = u[i]; cam_f[i] = f[i]; }
+}
+
+
+/* ---------- sonido: musica PCM + efectos sinteticos, solo CPU (sin RSP) ---------- */
+#define ARATE 22050
+typedef struct { float f0, f1, vol; int delay, dur, pos; float ph; } Voice;
+static Voice voices[6];
+static int audio_ok = 0, mpos = 0, music_on = 1;
+static float mpf = 0;
+static void sfx_add(float f0, float f1, float vol, int delay_ms, int dur_ms) {
+    for (int i = 0; i < 6; i++) if (voices[i].dur == 0) {
+        voices[i].f0 = f0; voices[i].f1 = f1; voices[i].vol = vol; voices[i].delay = delay_ms * ARATE / 1000;
+        voices[i].dur = dur_ms * ARATE / 1000; voices[i].pos = 0; voices[i].ph = 0; return;
+    }
+}
+static void sfx_play(int k) {
+    if (k == 0) { sfx_add(523, 523, 0.18f, 0, 90); sfx_add(784, 784, 0.18f, 80, 160); }
+    else if (k == 1) sfx_add(300, 700, 0.12f, 0, 150);
+    else if (k == 2) sfx_add(400, 70, 0.2f, 0, 450);
+    else { sfx_add(523, 523, 0.18f, 0, 200); sfx_add(659, 659, 0.18f, 150, 200); sfx_add(784, 784, 0.18f, 300, 200); sfx_add(1047, 1047, 0.18f, 450, 400); }
+}
+static void audio_pump(void) {
+    if (!audio_ok || !audio_can_write()) return;
+    short *buf = audio_write_begin();
+    int n = audio_get_buffer_length();
+    const float step = (float)MUSIC_RATE / ARATE;
+    for (int i = 0; i < n; i++) {
+        float m = 0;
+        if (music_on) {
+            m = MUSIC[mpos] * 0.55f;
+            mpf += step; while (mpf >= 1.f) { mpf -= 1.f; mpos++; if (mpos >= MUSIC_LEN) mpos = 0; }
+        }
+        float sfx = 0;
+        for (int v = 0; v < 6; v++) {
+            Voice *q = &voices[v];
+            if (q->dur == 0) continue;
+            if (q->delay > 0) { q->delay--; continue; }
+            float t = (float)q->pos / q->dur;
+            float f = q->f0 + (q->f1 - q->f0) * t;
+            q->ph += f / ARATE; if (q->ph >= 1.f) q->ph -= 1.f;
+            sfx += (q->ph < 0.5f ? 1.f : -1.f) * q->vol * (1.f - t) * 12000.f;
+            if (++q->pos >= q->dur) q->dur = 0;
+        }
+        float o = m + sfx;
+        if (o > 32000.f) { o = 32000.f; }
+        if (o < -32000.f) { o = -32000.f; }
+        short sv = (short)o;
+        buf[2 * i] = sv; buf[2 * i + 1] = sv;
+    }
+    audio_write_end();
 }
 
 /* ---------- rasterizador ---------- */
@@ -140,6 +192,7 @@ static void submit(const VV *a, const VV *b, const VV *c, const unsigned short *
 static VV tv[512];
 static void draw_model(int mid, const float m[12]) {
     const Model *md = &MODELS[mid];
+    audio_pump();
     /* matriz combinada: vista * modelo */
     float cm[12];
     for (int c = 0; c < 3; c++) {
@@ -211,12 +264,35 @@ static void draw_box(const LBox *b, float cr, float cg, float cb) {
 }
 
 /* ---------- escena ---------- */
+static float cam_d = 4.2f;
+static int cam_hit(const float q[3]) {
+    for (int i = 0; i < NBOX; i++) {
+        const LBox *b = &LBOXES[i];
+        if (b->trig || b->kind == 1 || b->kind == 3 || b->kind == 5) continue;
+        if (!box_near(b, q)) continue;
+        float d[3] = { q[0] - b->p[0], q[1] - b->p[1], q[2] - b->p[2] };
+        int ok = 1;
+        for (int j = 0; j < 3; j++) {
+            float l = b->r[j] * d[0] + b->r[3 + j] * d[1] + b->r[6 + j] * d[2];
+            if (fabsf(l) > b->h[j] + 0.25f) { ok = 0; break; }
+        }
+        if (ok) return 1;
+    }
+    return 0;
+}
 static void draw_world(void) {
     float e[3] = { pl.p[0], pl.p[1] + EYE, pl.p[2] };
     float cp = cosf(pl.pitch), sp = sinf(pl.pitch);
     float f[3] = { -sinf(pl.yaw) * cp, sp, -cosf(pl.yaw) * cp };
-    const float CD = 4.2f;
-    float eye[3] = { e[0] - f[0] * CD, e[1] - f[1] * CD + 0.6f, e[2] - f[2] * CD };
+    const float CDMAX = 4.2f;
+    float want = CDMAX;
+    for (float sd = 0.4f; sd <= CDMAX; sd += 0.3f) {
+        float q[3] = { e[0] - f[0] * sd, e[1] - f[1] * sd + 0.6f * sd / CDMAX, e[2] - f[2] * sd };
+        if (cam_hit(q)) { want = sd - 0.5f; if (want < 0.6f) want = 0.6f; break; }
+    }
+    cam_d += (want - cam_d) * (want < cam_d ? 0.6f : 0.1f);
+    float CD = cam_d;
+    float eye[3] = { e[0] - f[0] * CD, e[1] - f[1] * CD + 0.6f * CD / CDMAX, e[2] - f[2] * CD };
     float tgt[3] = { e[0], e[1] - 0.2f, e[2] };
     set_camera(eye, tgt);
 
@@ -259,6 +335,8 @@ static void draw_world(void) {
     {
         float a = face_a + PEAR_ROT, c = cosf(a), s = sinf(a);
         float m[12] = { c, 0, -s, 0, 1, 0, s, 0, c, pl.p[0], pl.p[1], pl.p[2] };
+        float sm[12] = { .55f, 0, 0, 0, .02f, 0, 0, 0, .55f, pl.p[0], pl.p[1] + .02f, pl.p[2] };
+        draw_model(MODEL_SHADOW, sm);
         for (int k = 0; k < PEAR_N; k++) draw_model(PEAR_MODELS[k], m);
         float fw[3] = { -sinf(face_a), 0, -cosf(face_a) };
         for (int q = -1; q <= 1; q += 2) {
@@ -272,8 +350,11 @@ static void draw_world(void) {
 int main(void) {
     display_init(RESOLUTION_320x240, DEPTH_16_BPP, 2, GAMMA_NONE, FILTERS_RESAMPLE);
     joypad_init();
+    audio_init(ARATE, 6);
+    audio_ok = 1;
     SKY = (((int)(0.45f*31)) << 11) | (((int)(0.72f*31)) << 6) | (31 << 1) | 1;
     game_init(&pl);
+    int title = 1, pg = 0, pd = 0, pw = 0; float pv = 0;
     uint64_t last = get_ticks_us();
     while (1) {
         uint64_t now = get_ticks_us();
@@ -297,10 +378,25 @@ int main(void) {
         if (held.c_down)  pl.pitch -= 1.5f * dt;
         if (pl.pitch > 1.2f) { pl.pitch = 1.2f; }
         if (pl.pitch < -1.2f) { pl.pitch = -1.2f; }
-        if (pressed.start) { game_init(&pl); }
-        if (!pl.won) game_step(&pl, dt, mx, mz, pressed.a || (held.a && pl.grounded), held.b || held.z);
+        if (title) {
+            pl.yaw += 0.25f * dt;
+            if (pressed.start || pressed.a) { title = 0; game_init(&pl); }
+        } else if (pressed.start) { game_init(&pl); pg = pd = pw = 0; }
+        if (!title && !pl.won) game_step(&pl, dt, mx, mz, pressed.a || (held.a && pl.grounded), held.b || held.z);
 
-        for (int i = 0; i < W * H; i++) cbuf[i] = SKY;
+        if (!title) {
+            if (pl.gems > pg) sfx_play(0);
+            if (pl.dead_count > pd) sfx_play(2);
+            if (pl.won && !pw) sfx_play(3);
+            if (pl.vy > 8.f && pv <= 8.f && !pl.won) sfx_play(1);
+            pg = pl.gems; pd = pl.dead_count; pw = pl.won; pv = pl.vy;
+        }
+        for (int y = 0; y < H; y++) {
+            float tt = (float)y / (H * 0.55f); if (tt > 1.f) tt = 1.f;
+            int r = (int)(0.18f * 31 + (0.75f - 0.18f) * 31 * tt), g = (int)(0.44f * 31 + (0.88f - 0.44f) * 31 * tt), b = (int)(0.85f * 31 + (1.0f - 0.85f) * 31 * tt);
+            unsigned short sc = (r << 11) | (g << 6) | (b << 1) | 1;
+            for (int x = 0; x < W; x++) cbuf[y * W + x] = sc;
+        }
         memset(zbuf, 0, sizeof zbuf);
         draw_world();
 
@@ -312,10 +408,21 @@ int main(void) {
             for (int x = 0; x < W; x++) { uint32_t v = ((uint32_t)src[x] << 16) | src[x]; r0[x] = v; r1[x] = v; }
         }
         graphics_set_color(graphics_make_color(255, 255, 255, 255), graphics_make_color(0, 0, 0, 0));
-        char tx[48];
-        sprintf(tx, "GEMAS %d/%d  ALTURA %d", pl.gems, NGEM, (int)pl.p[1]);
-        graphics_draw_text(disp, 12, 12, tx);
-        if (pl.won) graphics_draw_text(disp, 70, 110, "NIVEL COMPLETADO! START=REINICIAR");
+        if (title) {
+            int ox = (320 - TITLE_W) / 2, oy = 24;
+            for (int y = 0; y < TITLE_H; y++) {
+                unsigned short *row = (unsigned short *)((uint8_t *)disp->buffer + (oy + y) * disp->stride);
+                for (int x = 0; x < TITLE_W; x++) { unsigned short p = TITLE[y * TITLE_W + x]; if (p) row[ox + x] = p; }
+            }
+            graphics_draw_text(disp, 112, 200, ((now / 500000) & 1) ? "PULSA START" : "           ");
+            graphics_draw_text(disp, 40, 224, "Port no oficial - juego de zacdev");
+        } else {
+            char tx[48];
+            sprintf(tx, "GEMAS %d/%d  ALTURA %d", pl.gems, NGEM, (int)pl.p[1]);
+            graphics_draw_text(disp, 12, 12, tx);
+            if (pl.won) graphics_draw_text(disp, 70, 110, "NIVEL COMPLETADO! START=REINICIAR");
+        }
+        audio_pump();
         data_cache_hit_writeback_invalidate(disp->buffer, disp->stride * disp->height);
         display_show(disp);
     }

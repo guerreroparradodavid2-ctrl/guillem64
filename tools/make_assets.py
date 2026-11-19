@@ -114,12 +114,13 @@ for fn, tgt in (("mesh_id32.001_153.obj", 700), ("mesh_id51.001_182.obj", 140), 
     pear_models.append(add_model(("pear", fn), build_model(fn, i[1], i[2], tgt, xf)))
 # gema y bola
 gem = add_model(("gem",), build_model(D["gemMesh"], [None], [[1, .9, .2]], 40))
-def ball():
+def ball(col=(.86,.62,.1)):
     t = (1 + 5 ** .5) / 2; V = np.array([[-1, t, 0], [1, t, 0], [-1, -t, 0], [1, -t, 0], [0, -1, t], [0, 1, t], [0, -1, -t], [0, 1, -t], [t, 0, -1], [t, 0, 1], [-t, 0, -1], [-t, 0, 1]], float)
     V /= np.linalg.norm(V, axis=1)[:, None]
     F = [(0, 11, 5), (0, 5, 1), (0, 1, 7), (0, 7, 10), (0, 10, 11), (1, 5, 9), (5, 11, 4), (11, 10, 2), (10, 7, 6), (7, 1, 8), (3, 9, 4), (3, 4, 2), (3, 2, 6), (3, 6, 8), (3, 8, 9), (4, 9, 5), (2, 4, 11), (6, 2, 10), (8, 6, 7), (9, 8, 1)]
-    return [make_part(V, V, np.zeros((12, 2)), np.array(F), -1, [.86, .62, .1])]
+    return [make_part(V, V, np.zeros((12, 2)), np.array(F), -1, list(col))]
 ballm = add_model(("ball",), ball)
+shadowm = add_model(("shadow",), lambda: ball((.12,.36,.12)))
 print("partes", len(parts), "triangulos totales", sum(len(p["I"]) // 3 for p in parts), "texturas", len(tex_order))
 
 # ---- escritura
@@ -139,7 +140,7 @@ o.append("static const Part PARTS[%d]={%s};" % (len(parts), ",".join("{PP%d,PU%d
 o.append("static const Model MODELS[%d]={%s};" % (len(models), ",".join("{%d,%d}" % m for m in models)))
 o.append("#define NINST %d" % len(insts))
 o.append("static const Inst INSTS[NINST]={" + ",".join("{%d,{%s},{%.2f,%.2f,%.2f},%.2f}" % (m, arr(M, "%.4f"), *wc, r) for m, M, wc, r in insts) + "};")
-o.append("#define MODEL_GEM %d\n#define MODEL_BALL %d\n#define PEAR_N 3\nstatic const int PEAR_MODELS[3]={%d,%d,%d};" % (gem, ballm, *pear_models))
+o.append("#define MODEL_GEM %d\n#define MODEL_BALL %d\n#define MODEL_SHADOW %d\n#define PEAR_N 3\nstatic const int PEAR_MODELS[3]={%d,%d,%d};" % (gem, ballm, shadowm, *pear_models))
 o.append("#endif")
 open(os.path.join(SRC, "assets.h"), "w").write("\n".join(o))
 
