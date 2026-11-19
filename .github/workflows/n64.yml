@@ -21,7 +21,7 @@ jobs:
           ls /opt/libdragon/bin | head
       - name: libdragon (SDK)
         run: |
-          git clone --depth 1 https://github.com/DragonMinded/libdragon.git
+          git clone --depth 1 -b preview https://github.com/DragonMinded/libdragon.git
           cd libdragon
           sudo env N64_INST=/opt/libdragon "PATH=$PATH:/opt/libdragon/bin" ./build.sh
       - name: Compilar ROM
