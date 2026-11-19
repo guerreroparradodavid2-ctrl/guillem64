@@ -1,6 +1,7 @@
 BUILD_DIR=build
 SOURCE_DIR=src
 include $(N64_INST)/include/n64.mk
+CFLAGS += -Wno-error
 
 OBJS = $(BUILD_DIR)/main.o
 
