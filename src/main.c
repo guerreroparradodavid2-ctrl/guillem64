@@ -50,7 +50,9 @@ static void box_color(const LBox *b, int i, float *r, float *g, float *bl) {
         case 5: *r = 0.25f; *g = 0.6f; *bl = 0.25f; return;
         default: break;
     }
-    float t = (b->p[1] - 15.f) / 105.f; if (t < 0) t = 0; if (t > 1) t = 1;
+    float t = (b->p[1] - 15.f) / 105.f;
+        if (t < 0) t = 0;
+        if (t > 1) t = 1;
     float v = 0.55f + 0.25f * (float)((i * 37) % 5) / 4.f;
     *r = v * (0.7f + 0.3f * t); *g = v * 0.75f; *bl = v * (1.0f - 0.3f * t);
 }
@@ -203,13 +205,18 @@ int main(void) {
         joypad_buttons_t held = joypad_get_buttons_held(JOYPAD_PORT_1);
         joypad_buttons_t pressed = joypad_get_buttons_pressed(JOYPAD_PORT_1);
         float mx = (float)in.stick_x / 70.f, mz = (float)in.stick_y / 70.f;
-        if (fabsf(mx) < 0.12f) mx = 0; if (fabsf(mz) < 0.12f) mz = 0;
-        if (mx > 1) mx = 1; if (mx < -1) mx = -1; if (mz > 1) mz = 1; if (mz < -1) mz = -1;
+        if (fabsf(mx) < 0.12f) mx = 0;
+        if (fabsf(mz) < 0.12f) mz = 0;
+        if (mx > 1) mx = 1;
+        if (mx < -1) mx = -1;
+        if (mz > 1) mz = 1;
+        if (mz < -1) mz = -1;
         if (held.c_left)  pl.yaw += 2.2f * dt;
         if (held.c_right) pl.yaw -= 2.2f * dt;
         if (held.c_up)    pl.pitch += 1.5f * dt;
         if (held.c_down)  pl.pitch -= 1.5f * dt;
-        if (pl.pitch > 1.2f) pl.pitch = 1.2f; if (pl.pitch < -1.2f) pl.pitch = -1.2f;
+        if (pl.pitch > 1.2f) pl.pitch = 1.2f;
+        if (pl.pitch < -1.2f) pl.pitch = -1.2f;
         if (pressed.start) { game_init(&pl); }
         if (!pl.won) game_step(&pl, dt, mx, mz, pressed.a || (held.a && pl.grounded), held.b || held.z);
 
