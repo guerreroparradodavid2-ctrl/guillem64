@@ -1,46 +1,178 @@
 /* Guillem the Frutem Adventure - port no oficial para Nintendo 64 (libdragon).
-   Etapa 1: nivel con cajas, camara en primera persona, gemas, trampolines, muerte y meta. */
+   Render por SOFTWARE (solo CPU): no usa RSP ni RDP, asi que funciona en emuladores "normales". */
 #include <libdragon.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/gl_integration.h>
 #include <math.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #include "game.h"
 #include "assets.h"
+
+#define W 160
+#define H 120
+#define NEAR 0.3f
+#define FOCAL 87.7f          /* (H/2)/tan(fov/2) */
 #define PEAR_ROT 1.5708f
-static GLuint texid[sizeof(TEXTURES)/sizeof(TEXTURES[0])];
-static float face_a = 3.14159265f, last_x = 1e9f, last_z = 1e9f;
 
-static surface_t zbuf;
 static Player pl;
+static unsigned short cbuf[W * H];
+static float zbuf[W * H];
+static float face_a = 3.14159265f, last_x = 1e9f, last_z = 1e9f;
+static unsigned short SKY;
 
-static const float CUBE_V[6][4][3] = {
-    {{-.5f, .5f,-.5f},{ .5f, .5f,-.5f},{ .5f, .5f, .5f},{-.5f, .5f, .5f}},   /* +Y arriba */
-    {{-.5f,-.5f, .5f},{ .5f,-.5f, .5f},{ .5f,-.5f,-.5f},{-.5f,-.5f,-.5f}},   /* -Y abajo */
-    {{ .5f,-.5f,-.5f},{ .5f,-.5f, .5f},{ .5f, .5f, .5f},{ .5f, .5f,-.5f}},   /* +X */
-    {{-.5f,-.5f, .5f},{-.5f,-.5f,-.5f},{-.5f, .5f,-.5f},{-.5f, .5f, .5f}},   /* -X */
-    {{-.5f,-.5f, .5f},{ .5f,-.5f, .5f},{ .5f, .5f, .5f},{-.5f, .5f, .5f}},   /* +Z */
-    {{ .5f,-.5f,-.5f},{-.5f,-.5f,-.5f},{-.5f, .5f,-.5f},{ .5f, .5f,-.5f}},   /* -Z */
-};
-static const float SHADE[6] = { 1.00f, 0.50f, 0.80f, 0.70f, 0.85f, 0.65f };
+typedef struct { float x, y, z, u, v, r, g, b; } VV;                /* vertice en espacio camara */
+typedef struct { float x, y, iz, uz, vz, r, g, b; } SV;             /* vertice en pantalla */
 
-static void draw_cube(float cr, float cg, float cb) {
-    for (int f = 0; f < 6; f++) {
-        float s = SHADE[f];
-        glColor3f(cr * s, cg * s, cb * s);
-        glBegin(GL_TRIANGLES);
-        for (int t = 0; t < 2; t++) {
-            static const int idx[2][3] = {{0, 1, 2}, {0, 2, 3}};
-            for (int k = 0; k < 3; k++) {
-                const float *v = CUBE_V[f][idx[t][k]];
-                glVertex3f(v[0], v[1], v[2]);
+static float cam_p[3], cam_r[3], cam_u[3], cam_f[3];
+
+static void set_camera(const float eye[3], const float tgt[3]) {
+    float f[3] = { tgt[0]-eye[0], tgt[1]-eye[1], tgt[2]-eye[2] };
+    float l = sqrtf(f[0]*f[0] + f[1]*f[1] + f[2]*f[2]);
+    f[0] /= l; f[1] /= l; f[2] /= l;
+    float r[3] = { -f[2], 0, f[0] }; l = sqrtf(r[0]*r[0] + r[2]*r[2]);
+    if (l < 1e-6f) { l = 1; }
+    r[0] /= l; r[2] /= l;
+    float u[3] = { r[1]*f[2]-r[2]*f[1], r[2]*f[0]-r[0]*f[2], r[0]*f[1]-r[1]*f[0] };
+    for (int i = 0; i < 3; i++) { cam_p[i] = eye[i]; cam_r[i] = r[i]; cam_u[i] = u[i]; cam_f[i] = f[i]; }
+}
+
+/* ---------- rasterizador ---------- */
+static void raster(const SV *a, const SV *b, const SV *c, const unsigned short *tex, int tw, int th, int wm, int hm) {
+    float area = (b->x-a->x)*(c->y-a->y) - (c->x-a->x)*(b->y-a->y);
+    if (fabsf(area) < 0.3f) return;
+    if (area < 0) { const SV *t = b; b = c; c = t; area = -area; }
+    float minx = fminf(a->x, fminf(b->x, c->x)), maxx = fmaxf(a->x, fmaxf(b->x, c->x));
+    float miny = fminf(a->y, fminf(b->y, c->y)), maxy = fmaxf(a->y, fmaxf(b->y, c->y));
+    int x0 = (int)floorf(minx), x1 = (int)ceilf(maxx), y0 = (int)floorf(miny), y1 = (int)ceilf(maxy);
+    if (x0 < 0) { x0 = 0; }
+    if (y0 < 0) { y0 = 0; }
+    if (x1 > W - 1) { x1 = W - 1; }
+    if (y1 > H - 1) { y1 = H - 1; }
+    if (x0 > x1 || y0 > y1) return;
+    float inv = 1.f / area;
+    /* gradientes de los atributos (plano) */
+    float e0dx = -(b->y-a->y), e0dy = (b->x-a->x);       /* E(a,b,p) */
+    float e1dx = -(c->y-b->y), e1dy = (c->x-b->x);       /* E(b,c,p) */
+    float e2dx = -(a->y-c->y), e2dy = (a->x-c->x);       /* E(c,a,p) */
+    float px = x0 + 0.5f, py = y0 + 0.5f;
+    float e0r = (b->x-a->x)*(py-a->y) - (b->y-a->y)*(px-a->x);
+    float e1r = (c->x-b->x)*(py-b->y) - (c->y-b->y)*(px-b->x);
+    float e2r = (a->x-c->x)*(py-c->y) - (a->y-c->y)*(px-c->x);
+    /* baricentricas: w0=e1/area (a), w1=e2/area (b), w2=e0/area (c) */
+    float fa[6] = { a->iz, a->uz, a->vz, a->r, a->g, a->b };
+    float fb[6] = { b->iz, b->uz, b->vz, b->r, b->g, b->b };
+    float fc[6] = { c->iz, c->uz, c->vz, c->r, c->g, c->b };
+    float fdx[6], fdy[6], fr[6];
+    for (int k = 0; k < 6; k++) {
+        fdx[k] = (fa[k]*e1dx + fb[k]*e2dx + fc[k]*e0dx) * inv;
+        fdy[k] = (fa[k]*e1dy + fb[k]*e2dy + fc[k]*e0dy) * inv;
+        fr[k]  = (fa[k]*e1r  + fb[k]*e2r  + fc[k]*e0r ) * inv;
+    }
+    for (int y = y0; y <= y1; y++) {
+        float e0 = e0r, e1 = e1r, e2 = e2r, f0 = fr[0], f1 = fr[1], f2 = fr[2], f3 = fr[3], f4 = fr[4], f5 = fr[5];
+        float *zr = &zbuf[y * W]; unsigned short *cr = &cbuf[y * W];
+        for (int x = x0; x <= x1; x++) {
+            if (e0 >= 0 && e1 >= 0 && e2 >= 0 && f0 > zr[x]) {
+                zr[x] = f0;
+                int R = (int)f3, G = (int)f4, B = (int)f5;
+                if (R < 0) { R = 0; }
+                if (R > 255) { R = 255; }
+                if (G < 0) { G = 0; }
+                if (G > 255) { G = 255; }
+                if (B < 0) { B = 0; }
+                if (B > 255) { B = 255; }
+                if (tex) {
+                    float z = 1.f / f0;
+                    int ui = ((int)(f1 * z * tw)) & wm, vi = ((int)(f2 * z * th)) & hm;
+                    unsigned short t = tex[vi * tw + ui];
+                    R = (((t >> 11) & 31) * R) >> 7; G = (((t >> 6) & 31) * G) >> 7; B = (((t >> 1) & 31) * B) >> 7;
+                    if (R > 31) { R = 31; }
+                    if (G > 31) { G = 31; }
+                    if (B > 31) { B = 31; }
+                    cr[x] = (R << 11) | (G << 6) | (B << 1) | 1;
+                } else {
+                    cr[x] = ((R >> 3) << 11) | ((G >> 3) << 6) | ((B >> 3) << 1) | 1;
+                }
             }
+            e0 += e0dx; e1 += e1dx; e2 += e2dx; f0 += fdx[0]; f1 += fdx[1]; f2 += fdx[2]; f3 += fdx[3]; f4 += fdx[4]; f5 += fdx[5];
         }
-        glEnd();
+        e0r += e0dy; e1r += e1dy; e2r += e2dy; for (int k = 0; k < 6; k++) fr[k] += fdy[k];
     }
 }
 
+static void project(const VV *v, SV *o) {
+    float iz = 1.f / v->z;
+    o->x = W * 0.5f + v->x * iz * FOCAL; o->y = H * 0.5f - v->y * iz * FOCAL; o->iz = iz;
+    o->uz = v->u * iz; o->vz = v->v * iz; o->r = v->r; o->g = v->g; o->b = v->b;
+}
+
+static VV lerp_vv(const VV *a, const VV *b, float t) {
+    VV o; o.x = a->x + (b->x-a->x)*t; o.y = a->y + (b->y-a->y)*t; o.z = a->z + (b->z-a->z)*t;
+    o.u = a->u + (b->u-a->u)*t; o.v = a->v + (b->v-a->v)*t;
+    o.r = a->r + (b->r-a->r)*t; o.g = a->g + (b->g-a->g)*t; o.b = a->b + (b->b-a->b)*t; return o;
+}
+
+/* un triangulo en espacio camara: descarte, recorte contra el plano cercano y raster */
+static void submit(const VV *a, const VV *b, const VV *c, const unsigned short *tex, int tw, int th) {
+    if (a->z > 140 && b->z > 140 && c->z > 140) return;
+    if (a->z < NEAR && b->z < NEAR && c->z < NEAR) return;
+    if (a->x > 1.9f*a->z && b->x > 1.9f*b->z && c->x > 1.9f*c->z) return;
+    if (a->x < -1.9f*a->z && b->x < -1.9f*b->z && c->x < -1.9f*c->z) return;
+    if (a->y > 0.75f*a->z && b->y > 0.75f*b->z && c->y > 0.75f*c->z) return;
+    if (a->y < -0.75f*a->z && b->y < -0.75f*b->z && c->y < -0.75f*c->z) return;
+    int wm = tw - 1, hm = th - 1;
+    const VV *in[3] = { a, b, c };
+    VV poly[4]; int n = 0;
+    for (int i = 0; i < 3; i++) {
+        const VV *p = in[i], *q = in[(i + 1) % 3];
+        int pi = p->z >= NEAR, qi = q->z >= NEAR;
+        if (pi) poly[n++] = *p;
+        if (pi != qi) { float t = (NEAR - p->z) / (q->z - p->z); poly[n++] = lerp_vv(p, q, t); }
+    }
+    if (n < 3) return;
+    SV s[4];
+    for (int i = 0; i < n; i++) project(&poly[i], &s[i]);
+    raster(&s[0], &s[1], &s[2], tex, tw, th, wm, hm);
+    if (n == 4) raster(&s[0], &s[2], &s[3], tex, tw, th, wm, hm);
+}
+
+/* ---------- modelos ---------- */
+static VV tv[512];
+static void draw_model(int mid, const float m[12]) {
+    const Model *md = &MODELS[mid];
+    /* matriz combinada: vista * modelo */
+    float cm[12];
+    for (int c = 0; c < 3; c++) {
+        const float *q = &m[c * 3];
+        cm[c*3+0] = q[0]*cam_r[0] + q[1]*cam_r[1] + q[2]*cam_r[2];
+        cm[c*3+1] = q[0]*cam_u[0] + q[1]*cam_u[1] + q[2]*cam_u[2];
+        cm[c*3+2] = q[0]*cam_f[0] + q[1]*cam_f[1] + q[2]*cam_f[2];
+    }
+    float d[3] = { m[9]-cam_p[0], m[10]-cam_p[1], m[11]-cam_p[2] };
+    cm[9] = d[0]*cam_r[0] + d[1]*cam_r[1] + d[2]*cam_r[2];
+    cm[10] = d[0]*cam_u[0] + d[1]*cam_u[1] + d[2]*cam_u[2];
+    cm[11] = d[0]*cam_f[0] + d[1]*cam_f[1] + d[2]*cam_f[2];
+    for (int k = 0; k < md->n; k++) {
+        const Part *p = &PARTS[md->first + k];
+        for (int i = 0; i < p->nv; i++) {
+            float x = p->pos[i*3], y = p->pos[i*3+1], z = p->pos[i*3+2];
+            VV *o = &tv[i];
+            o->x = cm[0]*x + cm[3]*y + cm[6]*z + cm[9];
+            o->y = cm[1]*x + cm[4]*y + cm[7]*z + cm[10];
+            o->z = cm[2]*x + cm[5]*y + cm[8]*z + cm[11];
+            o->u = p->uv[i*2]; o->v = p->uv[i*2+1];
+            o->r = p->col[i*4]; o->g = p->col[i*4+1]; o->b = p->col[i*4+2];
+        }
+        const unsigned short *tx = 0; int tw = 1, th = 1;
+        if (p->tex >= 0) { tx = TEXTURES[p->tex].px; tw = TEXTURES[p->tex].w; th = TEXTURES[p->tex].h; }
+        for (int i = 0; i + 2 < p->ni; i += 3)
+            submit(&tv[p->idx[i]], &tv[p->idx[i+1]], &tv[p->idx[i+2]], tx, tw, th);
+    }
+}
+
+/* ---------- cajas ---------- */
+static const int CF[6][4] = { {3,2,6,7}, {0,1,5,4}, {1,2,6,5}, {0,3,7,4}, {4,5,6,7}, {0,1,2,3} };
+static const float CS[6] = { 0.85f, 0.65f, 0.80f, 0.70f, 1.00f, 0.50f };
 static void box_color(const LBox *b, int i, float *r, float *g, float *bl) {
     switch (b->kind) {
         case 1: *r = 0.9f; *g = 0.15f; *bl = 0.15f; return;
@@ -51,105 +183,70 @@ static void box_color(const LBox *b, int i, float *r, float *g, float *bl) {
         default: break;
     }
     float t = (b->p[1] - 15.f) / 105.f;
-        if (t < 0) t = 0;
-        if (t > 1) t = 1;
+    if (t < 0) { t = 0; }
+    if (t > 1) { t = 1; }
     float v = 0.55f + 0.25f * (float)((i * 37) % 5) / 4.f;
     *r = v * (0.7f + 0.3f * t); *g = v * 0.75f; *bl = v * (1.0f - 0.3f * t);
 }
-
-static void textures_init(void) {
-    int n = sizeof(TEXTURES) / sizeof(TEXTURES[0]);
-    glGenTextures(n, texid);
-    for (int i = 0; i < n; i++) {
-        glBindTexture(GL_TEXTURE_2D, texid[i]);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, TEXTURES[i].w, TEXTURES[i].h, 0, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1_EXT, TEXTURES[i].px);
+static void draw_box(const LBox *b, float cr, float cg, float cb) {
+    VV c[8];
+    for (int i = 0; i < 8; i++) {
+        float lx = ((i & 1) ^ ((i >> 1) & 1) ? 1 : -1) * b->h[0];
+        float ly = (i >> 2 ? 1 : -1) * b->h[1];
+        float lz = ((i >> 1) & 1 ? 1 : -1) * b->h[2];
+        float wx = b->r[0]*lx + b->r[1]*ly + b->r[2]*lz + b->p[0] - cam_p[0];
+        float wy = b->r[3]*lx + b->r[4]*ly + b->r[5]*lz + b->p[1] - cam_p[1];
+        float wz = b->r[6]*lx + b->r[7]*ly + b->r[8]*lz + b->p[2] - cam_p[2];
+        c[i].x = wx*cam_r[0] + wy*cam_r[1] + wz*cam_r[2];
+        c[i].y = wx*cam_u[0] + wy*cam_u[1] + wz*cam_u[2];
+        c[i].z = wx*cam_f[0] + wy*cam_f[1] + wz*cam_f[2];
+        c[i].u = c[i].v = 0;
+    }
+    /* cara f: 4 vertices consecutivos por el orden (lx,lz): 0(-,-) 1(+,-) 2(+,+) 3(-,+) */
+    for (int f = 0; f < 6; f++) {
+        VV q[4];
+        for (int k = 0; k < 4; k++) { q[k] = c[CF[f][k]]; q[k].r = cr*CS[f]*255; q[k].g = cg*CS[f]*255; q[k].b = cb*CS[f]*255; }
+        submit(&q[0], &q[1], &q[2], 0, 1, 1); submit(&q[0], &q[2], &q[3], 0, 1, 1);
     }
 }
 
-static void draw_model(int mid) {
-    const Model *m = &MODELS[mid];
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_COLOR_ARRAY);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    for (int k = 0; k < m->n; k++) {
-        const Part *p = &PARTS[m->first + k];
-        if (p->tex >= 0) { glEnable(GL_TEXTURE_2D); glBindTexture(GL_TEXTURE_2D, texid[p->tex]); }
-        else glDisable(GL_TEXTURE_2D);
-        glVertexPointer(3, GL_FLOAT, 0, p->pos);
-        glTexCoordPointer(2, GL_FLOAT, 0, p->uv);
-        glColorPointer(4, GL_UNSIGNED_BYTE, 0, p->col);
-        glDrawElements(GL_TRIANGLES, p->ni, GL_UNSIGNED_SHORT, p->idx);
-    }
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    glDisable(GL_TEXTURE_2D);
-}
-
-static void draw_world(float dt) {
+/* ---------- escena ---------- */
+static void draw_world(void) {
     float e[3] = { pl.p[0], pl.p[1] + EYE, pl.p[2] };
     float cp = cosf(pl.pitch), sp = sinf(pl.pitch);
     float f[3] = { -sinf(pl.yaw) * cp, sp, -cosf(pl.yaw) * cp };
     const float CD = 4.2f;
-    float cam[3] = { e[0] - f[0] * CD, e[1] - f[1] * CD + 0.6f, e[2] - f[2] * CD };
+    float eye[3] = { e[0] - f[0] * CD, e[1] - f[1] * CD + 0.6f, e[2] - f[2] * CD };
+    float tgt[3] = { e[0], e[1] - 0.2f, e[2] };
+    set_camera(eye, tgt);
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    float aspect = 320.f / 240.f, nr = 0.3f, tp = nr * tanf(0.6f), fr = 200.f;
-    glFrustum(-tp * aspect, tp * aspect, -tp, tp, nr, fr);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(cam[0], cam[1], cam[2], e[0], e[1] - 0.2f, e[2], 0, 1, 0);
-
-    /* cajas del nivel (sin las colisiones extra de mallas) */
     for (int i = 0; i < NBOXDRAW; i++) {
         const LBox *b = &LBOXES[i];
-        float dx = b->p[0] - e[0], dy = b->p[1] - e[1], dz = b->p[2] - e[2];
         float big = b->h[0] > b->h[2] ? b->h[0] : b->h[2];
-        float lim = 90.f + big;
+        if (big > 1000.f && b->kind != 5) continue;
+        float dx = b->p[0] - e[0], dy = b->p[1] - e[1], dz = b->p[2] - e[2];
+        float lim = 80.f + big;
         if (b->kind != 5 && dx*dx + dy*dy + dz*dz > lim * lim) continue;
         float cr, cg, cb; box_color(b, i, &cr, &cg, &cb);
-        float m[16] = {
-            b->r[0], b->r[3], b->r[6], 0,
-            b->r[1], b->r[4], b->r[7], 0,
-            b->r[2], b->r[5], b->r[8], 0,
-            b->p[0], b->p[1], b->p[2], 1 };
-        glPushMatrix();
-        glMultMatrixf(m);
-        glScalef(b->h[0] * 2, b->h[1] * 2, b->h[2] * 2);
-        draw_cube(cr, cg, cb);
-        glPopMatrix();
+        draw_box(b, cr, cg, cb);
     }
-    /* mallas del escenario */
     for (int i = 0; i < NINST; i++) {
         const Inst *n = &INSTS[i];
-        float dx = n->c[0] - cam[0], dy = n->c[1] - cam[1], dz = n->c[2] - cam[2];
+        float dx = n->c[0] - eye[0], dy = n->c[1] - eye[1], dz = n->c[2] - eye[2];
         float lim = 45.f + n->r;
         if (dx*dx + dy*dy + dz*dz > lim * lim) continue;
-        if (dx * f[0] + dy * f[1] + dz * f[2] < -n->r) continue;
-        const float *q = n->m;
-        float m[16] = { q[0], q[1], q[2], 0, q[3], q[4], q[5], 0, q[6], q[7], q[8], 0, q[9], q[10], q[11], 1 };
-        glPushMatrix();
-        glMultMatrixf(m);
-        draw_model(n->model);
-        glPopMatrix();
+        if (dx * cam_f[0] + dy * cam_f[1] + dz * cam_f[2] < -n->r) continue;
+        draw_model(n->model, n->m);
     }
-    /* gemas */
     for (int i = 0; i < NGEM; i++) {
         if (pl.got[i]) continue;
         float dx = LGEMS[i][0] - e[0], dy = LGEMS[i][1] - e[1], dz = LGEMS[i][2] - e[2];
-        if (dx*dx + dy*dy + dz*dz > 70.f * 70.f) continue;
-        glPushMatrix();
-        glTranslatef(LGEMS[i][0], LGEMS[i][1] + sinf(pl.t * 3.f + i) * 0.15f, LGEMS[i][2]);
-        glRotatef(pl.t * 114.6f, 0, 1, 0);
-        draw_model(MODEL_GEM);
-        glPopMatrix();
+        if (dx*dx + dy*dy + dz*dz > 45.f * 45.f) continue;
+        float a = pl.t * 2.f, c = cosf(a), s = sinf(a);
+        float m[12] = { c, 0, -s, 0, 1, 0, s, 0, c, LGEMS[i][0], LGEMS[i][1] + sinf(pl.t * 3.f + i) * 0.15f, LGEMS[i][2] };
+        draw_model(MODEL_GEM, m);
     }
-    /* la pera: gira hacia donde te mueves */
+    /* la pera gira hacia donde te mueves */
     if (last_x < 1e8f) {
         float mx = pl.p[0] - last_x, mz = pl.p[2] - last_z;
         if (mx * mx + mz * mz > 1e-5f) {
@@ -159,40 +256,23 @@ static void draw_world(float dt) {
         }
     }
     last_x = pl.p[0]; last_z = pl.p[2];
-    glPushMatrix();
-    glTranslatef(pl.p[0], pl.p[1], pl.p[2]);
-    glPushMatrix();
-    glRotatef((face_a + PEAR_ROT) * 57.29578f, 0, 1, 0);
-    for (int k = 0; k < PEAR_N; k++) draw_model(PEAR_MODELS[k]);
-    glPopMatrix();
-    float fw[3] = { -sinf(face_a), 0, -cosf(face_a) };
-    for (int q = -1; q <= 1; q += 2) {
-        glPushMatrix();
-        glTranslatef(-fw[0] * 0.40f + (-fw[2]) * q * 0.24f, 0.5f, -fw[2] * 0.40f + fw[0] * q * 0.24f);
-        glScalef(0.3f, 0.3f, 0.3f);
-        draw_model(MODEL_BALL);
-        glPopMatrix();
+    {
+        float a = face_a + PEAR_ROT, c = cosf(a), s = sinf(a);
+        float m[12] = { c, 0, -s, 0, 1, 0, s, 0, c, pl.p[0], pl.p[1], pl.p[2] };
+        for (int k = 0; k < PEAR_N; k++) draw_model(PEAR_MODELS[k], m);
+        float fw[3] = { -sinf(face_a), 0, -cosf(face_a) };
+        for (int q = -1; q <= 1; q += 2) {
+            float bm[12] = { .3f, 0, 0, 0, .3f, 0, 0, 0, .3f,
+                pl.p[0] - fw[0] * 0.40f + (-fw[2]) * q * 0.24f, pl.p[1] + 0.5f, pl.p[2] - fw[2] * 0.40f + fw[0] * q * 0.24f };
+            draw_model(MODEL_BALL, bm);
+        }
     }
-    glPopMatrix();
-    (void)dt;
 }
 
 int main(void) {
-    debug_init_isviewer();
-    display_init(RESOLUTION_320x240, DEPTH_16_BPP, 2, GAMMA_NONE, FILTERS_RESAMPLE_ANTIALIAS_DEDITHER);
-    zbuf = surface_alloc(FMT_RGBA16, display_get_width(), display_get_height());
-    rdpq_init();
-    gl_init();
+    display_init(RESOLUTION_320x240, DEPTH_16_BPP, 2, GAMMA_NONE, FILTERS_RESAMPLE);
     joypad_init();
-    rdpq_font_t *fnt = rdpq_font_load_builtin(FONT_BUILTIN_DEBUG_MONO);
-    rdpq_text_register_font(FONT_BUILTIN_DEBUG_MONO, fnt);
-
-    glEnable(GL_DEPTH_TEST);
-    glDisable(GL_LIGHTING);
-    glDisable(GL_CULL_FACE);
-    textures_init();
-    glClearColor(0.45f, 0.72f, 1.0f, 1.0f);
-
+    SKY = (((int)(0.45f*31)) << 11) | (((int)(0.72f*31)) << 6) | (31 << 1) | 1;
     game_init(&pl);
     uint64_t last = get_ticks_us();
     while (1) {
@@ -205,32 +285,39 @@ int main(void) {
         joypad_buttons_t held = joypad_get_buttons_held(JOYPAD_PORT_1);
         joypad_buttons_t pressed = joypad_get_buttons_pressed(JOYPAD_PORT_1);
         float mx = (float)in.stick_x / 70.f, mz = (float)in.stick_y / 70.f;
-        if (fabsf(mx) < 0.12f) mx = 0;
-        if (fabsf(mz) < 0.12f) mz = 0;
-        if (mx > 1) mx = 1;
-        if (mx < -1) mx = -1;
-        if (mz > 1) mz = 1;
-        if (mz < -1) mz = -1;
+        if (fabsf(mx) < 0.12f) { mx = 0; }
+        if (fabsf(mz) < 0.12f) { mz = 0; }
+        if (mx > 1) { mx = 1; }
+        if (mx < -1) { mx = -1; }
+        if (mz > 1) { mz = 1; }
+        if (mz < -1) { mz = -1; }
         if (held.c_left)  pl.yaw += 2.2f * dt;
         if (held.c_right) pl.yaw -= 2.2f * dt;
         if (held.c_up)    pl.pitch += 1.5f * dt;
         if (held.c_down)  pl.pitch -= 1.5f * dt;
-        if (pl.pitch > 1.2f) pl.pitch = 1.2f;
-        if (pl.pitch < -1.2f) pl.pitch = -1.2f;
+        if (pl.pitch > 1.2f) { pl.pitch = 1.2f; }
+        if (pl.pitch < -1.2f) { pl.pitch = -1.2f; }
         if (pressed.start) { game_init(&pl); }
         if (!pl.won) game_step(&pl, dt, mx, mz, pressed.a || (held.a && pl.grounded), held.b || held.z);
 
-        surface_t *disp = display_get();
-        rdpq_attach(disp, &zbuf);
-        gl_context_begin();
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        draw_world(dt);
-        gl_context_end();
+        for (int i = 0; i < W * H; i++) cbuf[i] = SKY;
+        memset(zbuf, 0, sizeof zbuf);
+        draw_world();
 
-        rdpq_text_printf(NULL, FONT_BUILTIN_DEBUG_MONO, 12, 18, "GEMAS %d/%d", pl.gems, NGEM);
-        rdpq_text_printf(NULL, FONT_BUILTIN_DEBUG_MONO, 12, 30, "ALTURA %d", (int)pl.p[1]);
-        if (pl.won) rdpq_text_printf(NULL, FONT_BUILTIN_DEBUG_MONO, 90, 110, "NIVEL COMPLETADO!  START=REINICIAR");
-        rdpq_detach_show();
+        surface_t *disp = display_get();
+        for (int y = 0; y < H; y++) {
+            uint32_t *r0 = (uint32_t *)((uint8_t *)disp->buffer + (2 * y) * disp->stride);
+            uint32_t *r1 = (uint32_t *)((uint8_t *)disp->buffer + (2 * y + 1) * disp->stride);
+            const unsigned short *src = &cbuf[y * W];
+            for (int x = 0; x < W; x++) { uint32_t v = ((uint32_t)src[x] << 16) | src[x]; r0[x] = v; r1[x] = v; }
+        }
+        graphics_set_color(graphics_make_color(255, 255, 255, 255), graphics_make_color(0, 0, 0, 0));
+        char tx[48];
+        sprintf(tx, "GEMAS %d/%d  ALTURA %d", pl.gems, NGEM, (int)pl.p[1]);
+        graphics_draw_text(disp, 12, 12, tx);
+        if (pl.won) graphics_draw_text(disp, 70, 110, "NIVEL COMPLETADO! START=REINICIAR");
+        data_cache_hit_writeback_invalidate(disp->buffer, disp->stride * disp->height);
+        display_show(disp);
     }
     return 0;
 }
