@@ -241,8 +241,8 @@ static void box_color(const LBox *b, int i, float *r, float *g, float *bl) {
     float v = 0.55f + 0.25f * (float)((i * 37) % 5) / 4.f;
     *r = v * (0.7f + 0.3f * t); *g = v * 0.75f; *bl = v * (1.0f - 0.3f * t);
 }
-static void draw_box(const LBox *b, float cr, float cg, float cb) {
-    VV c[8];
+static void draw_box(const LBox *b, float cr, float cg, float cb, int tex, float tile) {
+    VV c[8]; float lu[8], lv_[8], lw[8];
     for (int i = 0; i < 8; i++) {
         float lx = ((i & 1) ^ ((i >> 1) & 1) ? 1 : -1) * b->h[0];
         float ly = (i >> 2 ? 1 : -1) * b->h[1];
@@ -253,13 +253,21 @@ static void draw_box(const LBox *b, float cr, float cg, float cb) {
         c[i].x = wx*cam_r[0] + wy*cam_r[1] + wz*cam_r[2];
         c[i].y = wx*cam_u[0] + wy*cam_u[1] + wz*cam_u[2];
         c[i].z = wx*cam_f[0] + wy*cam_f[1] + wz*cam_f[2];
-        c[i].u = c[i].v = 0;
+        c[i].u = c[i].v = 0; lu[i] = lx; lv_[i] = ly; lw[i] = lz;
     }
+    const unsigned short *tx = 0; int tw = 1, th = 1;
+    if (tex >= 0) { tx = TEXTURES[tex].px; tw = TEXTURES[tex].w; th = TEXTURES[tex].h; }
     /* cara f: 4 vertices consecutivos por el orden (lx,lz): 0(-,-) 1(+,-) 2(+,+) 3(-,+) */
     for (int f = 0; f < 6; f++) {
         VV q[4];
-        for (int k = 0; k < 4; k++) { q[k] = c[CF[f][k]]; q[k].r = cr*CS[f]*255; q[k].g = cg*CS[f]*255; q[k].b = cb*CS[f]*255; }
-        submit(&q[0], &q[1], &q[2], 0, 1, 1); submit(&q[0], &q[2], &q[3], 0, 1, 1);
+        for (int k = 0; k < 4; k++) {
+            int ci = CF[f][k]; q[k] = c[ci];
+            q[k].r = cr*CS[f]*255; q[k].g = cg*CS[f]*255; q[k].b = cb*CS[f]*255;
+            if (f <= 1) { q[k].u = lu[ci] / tile; q[k].v = lv_[ci] / tile; }
+            else if (f <= 3) { q[k].u = lw[ci] / tile; q[k].v = lv_[ci] / tile; }
+            else { q[k].u = lu[ci] / tile; q[k].v = lw[ci] / tile; }
+        }
+        submit(&q[0], &q[1], &q[2], tx, tw, th); submit(&q[0], &q[2], &q[3], tx, tw, th);
     }
 }
 
@@ -304,7 +312,12 @@ static void draw_world(void) {
         float lim = 80.f + big;
         if (b->kind != 5 && dx*dx + dy*dy + dz*dz > lim * lim) continue;
         float cr, cg, cb; box_color(b, i, &cr, &cg, &cb);
-        draw_box(b, cr, cg, cb);
+        int bt = BOXTEX[i];
+        if (bt >= 0) { cr = cg = cb = 1.f; }
+        else if (BOXCOL[i][0] >= 0 && (b->kind == 0 || b->kind == 4)) { cr = BOXCOL[i][0] / 255.f; cg = BOXCOL[i][1] / 255.f; cb = BOXCOL[i][2] / 255.f; }
+        if (bt >= 0 && b->kind == 5) { cr = 0.76f; cg = 0.86f; cb = 0.68f; }
+        if (bt >= 0) { cr *= 0.6f; cg *= 0.6f; cb *= 0.6f; }
+        draw_box(b, cr, cg, cb, bt, b->kind == 5 ? 5.f : 3.f);
     }
     for (int i = 0; i < NINST; i++) {
         const Inst *n = &INSTS[i];

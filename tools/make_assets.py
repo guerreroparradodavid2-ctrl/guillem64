@@ -7,6 +7,8 @@ from PIL import Image
 
 HERE = os.path.dirname(os.path.abspath(__file__)); SRC = os.path.join(HERE, "..", "src")
 D = json.load(open(os.path.join(HERE, "data2.json")))
+BT = json.load(open(os.path.join(HERE, "boxtex.json")))
+D["tex"].update(BT["tex"])
 STATIC_SKIP = ("body2", "head", "hair", "arms", "XGOK", "GOK", "Cylinder", "unamed", "Plane_165", "squidward", "Capsule", "mesh_id", "Collectable")
 LIGHT = np.array([.4, .8, .3]); LIGHT /= np.linalg.norm(LIGHT)
 
@@ -112,6 +114,14 @@ for fn, tgt in (("mesh_id32.001_153.obj", 700), ("mesh_id51.001_182.obj", 140), 
     i = PM[fn]; M = i[3]; A = np.array([[M[0], M[3], M[6]], [M[1], M[4], M[7]], [M[2], M[5], M[8]]])
     def xf(P, N, A=A): return (P - C0) @ A.T, N @ (A / np.linalg.norm(A, axis=0)).T
     pear_models.append(add_model(("pear", fn), build_model(fn, i[1], i[2], tgt, xf)))
+# texturas de las cajas del nivel
+box_tex = []; box_col = []
+for x in BT["btx"]:
+    if x is None: box_tex.append(-1); box_col.append((-1, -1, -1)); continue
+    box_tex.append(tex_id(x[0]) if x[0] else -1)
+    c = x[1] or [1, 1, 1]
+    box_col.append(tuple(int(v * 255) for v in c) if (x[1] and not x[0]) else (-1, -1, -1))
+GRASS = tex_id("Grass_1_115.png")
 # gema y bola
 gem = add_model(("gem",), build_model(D["gemMesh"], [None], [[1, .9, .2]], 40))
 def ball(col=(.86,.62,.1)):
@@ -141,6 +151,8 @@ o.append("static const Model MODELS[%d]={%s};" % (len(models), ",".join("{%d,%d}
 o.append("#define NINST %d" % len(insts))
 o.append("static const Inst INSTS[NINST]={" + ",".join("{%d,{%s},{%.2f,%.2f,%.2f},%.2f}" % (m, arr(M, "%.4f"), *wc, r) for m, M, wc, r in insts) + "};")
 o.append("#define MODEL_GEM %d\n#define MODEL_BALL %d\n#define MODEL_SHADOW %d\n#define PEAR_N 3\nstatic const int PEAR_MODELS[3]={%d,%d,%d};" % (gem, ballm, shadowm, *pear_models))
+o.append("static const signed char BOXTEX[%d]={%s};" % (len(box_tex), ",".join(map(str, box_tex))))
+o.append("static const short BOXCOL[%d][3]={%s};" % (len(box_col), ",".join("{%d,%d,%d}" % c for c in box_col)))
 o.append("#endif")
 open(os.path.join(SRC, "assets.h"), "w").write("\n".join(o))
 
