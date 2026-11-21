@@ -492,12 +492,12 @@ int main(void) {
             graphics_draw_text(disp, 112, 200, ((now / 500000) & 1) ? "PULSA START" : "           ");
             graphics_draw_text(disp, 40, 224, "Port no oficial - juego de zacdev");
         } else {
-            char tx[32];
-            sprintf(tx, "G%d/%d H%d F%d", pl.gems, NGEM, (int)pl.p[1], (int)(fps + 0.5f));
+            char tx[96];
+            snprintf(tx, sizeof tx, "G%d/%d H%d F%d", pl.gems, NGEM, (int)pl.p[1], (int)(fps + 0.5f));
             graphics_draw_text(disp, 4, 4, tx);
-            sprintf(tx, "C%u B%u I%u P%u", t_cam / 1000, t_box / 1000, t_inst / 1000, t_pear / 1000);
+            snprintf(tx, sizeof tx, "C%u B%u I%u P%u", t_cam / 1000, t_box / 1000, t_inst / 1000, t_pear / 1000);
             graphics_draw_text(disp, 4, 14, tx);
-            sprintf(tx, "S%u L%u", t_step / 1000, t_loop / 1000);
+            snprintf(tx, sizeof tx, "S%u L%u", t_step / 1000, t_loop / 1000);
             graphics_draw_text(disp, 4, 24, tx);
             if (pl.won) { graphics_draw_text(disp, 8, 40, "COMPLETADO!"); graphics_draw_text(disp, 8, 52, "START=OTRA VEZ"); }
         }
