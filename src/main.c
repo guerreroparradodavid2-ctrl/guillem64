@@ -102,7 +102,7 @@ static void audio_pump(void) {
 /* acota un float antes de pasarlo a int: la FPU de la N64 lanza excepcion si se desborda */
 #define CLAMPF(v) fminf(fmaxf((v), -1000000.f), 1000000.f)
 /* triangulos diminutos del mundo se descartan (casi no cubren pixeles); la pera usa un umbral pequeno */
-static float MINA = 3.f;
+static float MINA = 2.f;
 #define FLATA 300.f
 static void raster(const SV *a, const SV *b, const SV *c, const unsigned short *tex, int tw, int th, int wm, int hm) {
     float area = (b->x-a->x)*(c->y-a->y) - (c->x-a->x)*(b->y-a->y);
@@ -131,7 +131,9 @@ static void raster(const SV *a, const SV *b, const SV *c, const unsigned short *
     float fb[6] = { b->iz, b->uz, b->vz, b->r, b->g, b->b };
     float fc[6] = { c->iz, c->uz, c->vz, c->r, c->g, c->b };
     /* triangulos pequenos: sombreado plano (color medio por triangulo) y bucle de pixeles en enteros, mucho mas barato en la N64 */
-    int flat = area < FLATA;
+    /* color uniforme en los tres vertices (suelo, caras de cajas): sombreado plano exacto, sea cual sea el tamano */
+    int uniform = fabsf(a->r - b->r) + fabsf(a->r - c->r) + fabsf(a->g - b->g) + fabsf(a->g - c->g) + fabsf(a->b - b->b) + fabsf(a->b - c->b) < 6.f;
+    int flat = uniform || area < FLATA;
     int na = flat ? (tex ? 3 : 1) : 6;
     int mr = 0, mg = 0, mb = 0;
     if (flat) {
@@ -386,7 +388,7 @@ static int cam_hit(const float q[3]) {
 }
 static unsigned t_box, t_inst, t_pear, t_cam, t_step, t_loop;   /* microsegundos del ultimo fotograma (diagnostico) */
 static void draw_world(void) {
-    MINA = 3.f;
+    MINA = 2.f;
     uint64_t T0 = get_ticks_us();
     float e[3] = { pl.p[0], pl.p[1] + EYE, pl.p[2] };
     float cp = cosf(pl.pitch), sp = sinf(pl.pitch);
