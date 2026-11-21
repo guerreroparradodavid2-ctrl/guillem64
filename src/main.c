@@ -89,12 +89,15 @@ static void audio_pump(void) {
 }
 
 /* ---------- rasterizador ---------- */
+/* acota un float antes de pasarlo a int: la FPU de la N64 lanza excepcion si se desborda */
+#define CLAMPF(v) fminf(fmaxf((v), -1000000.f), 1000000.f)
 static void raster(const SV *a, const SV *b, const SV *c, const unsigned short *tex, int tw, int th, int wm, int hm) {
     float area = (b->x-a->x)*(c->y-a->y) - (c->x-a->x)*(b->y-a->y);
     if (fabsf(area) < 0.3f) return;
     if (area < 0) { const SV *t = b; b = c; c = t; area = -area; }
     float minx = fminf(a->x, fminf(b->x, c->x)), maxx = fmaxf(a->x, fmaxf(b->x, c->x));
     float miny = fminf(a->y, fminf(b->y, c->y)), maxy = fmaxf(a->y, fmaxf(b->y, c->y));
+    minx = CLAMPF(minx); maxx = CLAMPF(maxx); miny = CLAMPF(miny); maxy = CLAMPF(maxy);
     int x0 = (int)floorf(minx), x1 = (int)ceilf(maxx), y0 = (int)floorf(miny), y1 = (int)ceilf(maxy);
     if (x0 < 0) { x0 = 0; }
     if (y0 < 0) { y0 = 0; }
@@ -126,11 +129,12 @@ static void raster(const SV *a, const SV *b, const SV *c, const unsigned short *
     float tw_f = (float)tw, th_f = (float)th;
     float dz = fdx[0];
     for (int y = y0; y <= y1; y++, e0r += e0dy, e1r += e1dy, e2r += e2dy, fr[0] += fdy[0], fr[1] += fdy[1], fr[2] += fdy[2], fr[3] += fdy[3], fr[4] += fdy[4], fr[5] += fdy[5]) {
-        int tmin = 0, tmax = maxt;
-        if (e0dx > 0.f) { int t = (int)ceilf(-e0r * i0); if (t > tmin) tmin = t; } else if (e0dx < 0.f) { int t = (int)floorf(-e0r * i0); if (t < tmax) tmax = t; } else if (e0r < 0.f) continue;
-        if (e1dx > 0.f) { int t = (int)ceilf(-e1r * i1); if (t > tmin) tmin = t; } else if (e1dx < 0.f) { int t = (int)floorf(-e1r * i1); if (t < tmax) tmax = t; } else if (e1r < 0.f) continue;
-        if (e2dx > 0.f) { int t = (int)ceilf(-e2r * i2); if (t > tmin) tmin = t; } else if (e2dx < 0.f) { int t = (int)floorf(-e2r * i2); if (t < tmax) tmax = t; } else if (e2r < 0.f) continue;
-        if (tmin > tmax) continue;
+        float tminf = 0.f, tmaxf = (float)maxt;
+        if (e0dx > 0.f) { float tf = ceilf(-e0r * i0); if (tf > tminf) tminf = tf; } else if (e0dx < 0.f) { float tf = floorf(-e0r * i0); if (tf < tmaxf) tmaxf = tf; } else if (e0r < 0.f) continue;
+        if (e1dx > 0.f) { float tf = ceilf(-e1r * i1); if (tf > tminf) tminf = tf; } else if (e1dx < 0.f) { float tf = floorf(-e1r * i1); if (tf < tmaxf) tmaxf = tf; } else if (e1r < 0.f) continue;
+        if (e2dx > 0.f) { float tf = ceilf(-e2r * i2); if (tf > tminf) tminf = tf; } else if (e2dx < 0.f) { float tf = floorf(-e2r * i2); if (tf < tmaxf) tmaxf = tf; } else if (e2r < 0.f) continue;
+        if (!(tminf <= tmaxf)) continue;
+        int tmin = (int)tminf, tmax = (int)tmaxf;
         float *zr = &zbuf[y * W + x0]; unsigned short *cr = &cbuf[y * W + x0];
         float f0 = fr[0] + dz * (float)tmin;
         int t = tmin;
@@ -138,9 +142,9 @@ static void raster(const SV *a, const SV *b, const SV *c, const unsigned short *
             while (t <= tmax) {
                 int tn = t + 8; int last = 0;
                 if (tn >= tmax) { tn = tmax; last = 1; }
-                float zA = 1.f / (fr[0] + dz * (float)t), zB = 1.f / (fr[0] + dz * (float)tn);
-                float uA = (fr[1] + fdx[1] * (float)t) * zA * tw_f, vA = (fr[2] + fdx[2] * (float)t) * zA * th_f;
-                float uB = (fr[1] + fdx[1] * (float)tn) * zB * tw_f, vB = (fr[2] + fdx[2] * (float)tn) * zB * th_f;
+                float fzA = fr[0] + dz * (float)t, fzB = fr[0] + dz * (float)tn; if (fzA < 1e-5f) fzA = 1e-5f; if (fzB < 1e-5f) fzB = 1e-5f; float zA = 1.f / fzA, zB = 1.f / fzB;
+                float uA = CLAMPF((fr[1] + fdx[1] * (float)t) * zA * tw_f), vA = CLAMPF((fr[2] + fdx[2] * (float)t) * zA * th_f);
+                float uB = CLAMPF((fr[1] + fdx[1] * (float)tn) * zB * tw_f), vB = CLAMPF((fr[2] + fdx[2] * (float)tn) * zB * th_f);
                 int len = tn - t;
                 float du = len ? (uB - uA) / (float)len : 0.f, dv = len ? (vB - vA) / (float)len : 0.f;
                 int end = last ? tn + 1 : tn;
@@ -148,7 +152,7 @@ static void raster(const SV *a, const SV *b, const SV *c, const unsigned short *
                     if (f0 > zr[t]) {
                         zr[t] = f0;
                         float ft = (float)t;
-                        int R = (int)(fr[3] + fdx[3] * ft), G = (int)(fr[4] + fdx[4] * ft), B = (int)(fr[5] + fdx[5] * ft);
+                        int R = (int)CLAMPF(fr[3] + fdx[3] * ft), G = (int)CLAMPF(fr[4] + fdx[4] * ft), B = (int)CLAMPF(fr[5] + fdx[5] * ft);
                         unsigned short tc = tex[(((int)vA) & hm) * tw + (((int)uA) & wm)];
                         if (R < 0) { R = 0; }
                         if (G < 0) { G = 0; }
@@ -166,7 +170,7 @@ static void raster(const SV *a, const SV *b, const SV *c, const unsigned short *
                 if (f0 > zr[t]) {
                     zr[t] = f0;
                     float ft = (float)t;
-                    int R = (int)(fr[3] + fdx[3] * ft), G = (int)(fr[4] + fdx[4] * ft), B = (int)(fr[5] + fdx[5] * ft);
+                    int R = (int)CLAMPF(fr[3] + fdx[3] * ft), G = (int)CLAMPF(fr[4] + fdx[4] * ft), B = (int)CLAMPF(fr[5] + fdx[5] * ft);
                     if (R < 0) { R = 0; }
                     if (R > 255) { R = 255; }
                     if (G < 0) { G = 0; }
