@@ -17,7 +17,8 @@
 #define PEAR_ROT 1.5708f
 
 static Player pl;
-static unsigned short cbuf[W * H];
+static unsigned short cbuf_off[W * H];      /* imagen fuera de pantalla (menu de titulo) */
+static unsigned short *cbuf = cbuf_off;       /* en juego apunta directo al framebuffer */
 static float zbuf[W * H];
 static float face_a = 3.14159265f, last_x = 1e9f, last_z = 1e9f;
 static unsigned short SKY;
@@ -91,9 +92,11 @@ static void audio_pump(void) {
 /* ---------- rasterizador ---------- */
 /* acota un float antes de pasarlo a int: la FPU de la N64 lanza excepcion si se desborda */
 #define CLAMPF(v) fminf(fmaxf((v), -1000000.f), 1000000.f)
+/* triangulos diminutos del mundo se descartan (casi no cubren pixeles); la pera usa un umbral pequeno */
+static float MINA = 3.f;
 static void raster(const SV *a, const SV *b, const SV *c, const unsigned short *tex, int tw, int th, int wm, int hm) {
     float area = (b->x-a->x)*(c->y-a->y) - (c->x-a->x)*(b->y-a->y);
-    if (fabsf(area) < 0.3f) return;
+    if (fabsf(area) < MINA) return;
     if (area < 0) { const SV *t = b; b = c; c = t; area = -area; }
     float minx = fminf(a->x, fminf(b->x, c->x)), maxx = fmaxf(a->x, fmaxf(b->x, c->x));
     float miny = fminf(a->y, fminf(b->y, c->y)), maxy = fmaxf(a->y, fmaxf(b->y, c->y));
@@ -321,6 +324,7 @@ static int cam_hit(const float q[3]) {
     return 0;
 }
 static void draw_world(void) {
+    MINA = 3.f;
     float e[3] = { pl.p[0], pl.p[1] + EYE, pl.p[2] };
     float cp = cosf(pl.pitch), sp = sinf(pl.pitch);
     float f[3] = { -sinf(pl.yaw) * cp, sp, -cosf(pl.yaw) * cp };
@@ -381,6 +385,7 @@ static void draw_world(void) {
         float a = face_a + PEAR_ROT, c = cosf(a), s = sinf(a);
         float m[12] = { c, 0, -s, 0, 1, 0, s, 0, c, pl.p[0], pl.p[1], pl.p[2] };
         float sm[12] = { .55f, 0, 0, 0, .02f, 0, 0, 0, .55f, pl.p[0], pl.p[1] + .02f, pl.p[2] };
+        MINA = 0.3f;
         draw_model(MODEL_SHADOW, sm);
         for (int k = 0; k < PEAR_N; k++) draw_model(PEAR_MODELS[k], m);
         float fw[3] = { -sinf(face_a), 0, -cosf(face_a) };
@@ -393,6 +398,8 @@ static void draw_world(void) {
 }
 
 int main(void) {
+    /* titulo: 320x240 con la imagen reescalada por CPU. Juego: el framebuffer es de W x H y lo estira el hardware de video de la N64 */
+    resolution_t small = { .width = W, .height = H };
     display_init(RESOLUTION_320x240, DEPTH_16_BPP, 2, GAMMA_NONE, FILTERS_RESAMPLE);
     joypad_init();
     audio_init(ARATE, 6);
@@ -426,7 +433,12 @@ int main(void) {
         if (pl.pitch < -1.2f) { pl.pitch = -1.2f; }
         if (title) {
             pl.yaw += 0.25f * dt;
-            if (pressed.start || pressed.a) { title = 0; game_init(&pl); }
+            if (pressed.start || pressed.a) {
+                title = 0; game_init(&pl);
+                display_close();
+                display_init(small, DEPTH_16_BPP, 2, GAMMA_NONE, FILTERS_RESAMPLE);
+                last = get_ticks_us(); continue;
+            }
         } else if (pressed.start) { game_init(&pl); pg = pd = pw = 0; }
         if (!title && !pl.won) game_step(&pl, dt, mx, mz, pressed.a || (held.a && pl.grounded), held.b || held.z);
 
@@ -437,6 +449,8 @@ int main(void) {
             if (pl.vy > 8.f && pv <= 8.f && !pl.won) sfx_play(1);
             pg = pl.gems; pd = pl.dead_count; pw = pl.won; pv = pl.vy;
         }
+        surface_t *disp = display_get();
+        cbuf = title ? cbuf_off : (unsigned short *)disp->buffer;
         for (int y = 0; y < H; y++) {
             float tt = (float)y / (H * 0.55f); if (tt > 1.f) tt = 1.f;
             int r = (int)(0.18f * 31 + (0.75f - 0.18f) * 31 * tt), g = (int)(0.44f * 31 + (0.88f - 0.44f) * 31 * tt), b = (int)(0.85f * 31 + (1.0f - 0.85f) * 31 * tt);
@@ -447,8 +461,8 @@ int main(void) {
         memset(zbuf, 0, sizeof zbuf);
         draw_world();
 
-        surface_t *disp = display_get();
-        {
+        graphics_set_color(graphics_make_color(255, 255, 255, 255), graphics_make_color(0, 0, 0, 0));
+        if (title) {
             static unsigned short xmap[320]; static int xmap_ok;
             if (!xmap_ok) { for (int x = 0; x < 320; x++) xmap[x] = (unsigned short)(x * W / 320); xmap_ok = 1; }
             int lastsy = -1; unsigned short *prev = 0;
@@ -457,14 +471,11 @@ int main(void) {
                 unsigned short *dst = (unsigned short *)((uint8_t *)disp->buffer + y * disp->stride);
                 if (sy == lastsy) { memcpy(dst, prev, 640); }
                 else {
-                    const unsigned short *src = &cbuf[sy * W];
+                    const unsigned short *src = &cbuf_off[sy * W];
                     for (int x = 0; x < 320; x += 2) { dst[x] = src[xmap[x]]; dst[x + 1] = src[xmap[x + 1]]; }
                     lastsy = sy; prev = dst;
                 }
             }
-        }
-        graphics_set_color(graphics_make_color(255, 255, 255, 255), graphics_make_color(0, 0, 0, 0));
-        if (title) {
             int ox = (320 - TITLE_W) / 2, oy = 24;
             for (int y = 0; y < TITLE_H; y++) {
                 unsigned short *row = (unsigned short *)((uint8_t *)disp->buffer + (oy + y) * disp->stride);
@@ -473,10 +484,10 @@ int main(void) {
             graphics_draw_text(disp, 112, 200, ((now / 500000) & 1) ? "PULSA START" : "           ");
             graphics_draw_text(disp, 40, 224, "Port no oficial - juego de zacdev");
         } else {
-            char tx[48];
-            sprintf(tx, "GEMAS %d/%d  ALTURA %d  FPS %d", pl.gems, NGEM, (int)pl.p[1], (int)(fps + 0.5f));
-            graphics_draw_text(disp, 12, 12, tx);
-            if (pl.won) graphics_draw_text(disp, 70, 110, "NIVEL COMPLETADO! START=REINICIAR");
+            char tx[32];
+            sprintf(tx, "G%d/%d H%d F%d", pl.gems, NGEM, (int)pl.p[1], (int)(fps + 0.5f));
+            graphics_draw_text(disp, 4, 4, tx);
+            if (pl.won) { graphics_draw_text(disp, 8, 40, "COMPLETADO!"); graphics_draw_text(disp, 8, 52, "START=OTRA VEZ"); }
         }
         audio_pump();
         data_cache_hit_writeback_invalidate(disp->buffer, disp->stride * disp->height);
