@@ -10,10 +10,10 @@
 #include "music.h"
 #include "title.h"
 
-#define W 160
-#define H 120
+#define W 128
+#define H 96
 #define NEAR 0.3f
-#define FOCAL 87.7f          /* (H/2)/tan(fov/2) */
+#define FOCAL 70.2f          /* (H/2)/tan(fov/2) */
 #define PEAR_ROT 1.5708f
 
 static Player pl;
@@ -120,35 +120,63 @@ static void raster(const SV *a, const SV *b, const SV *c, const unsigned short *
         fdy[k] = (fa[k]*e1dy + fb[k]*e2dy + fc[k]*e0dy) * inv;
         fr[k]  = (fa[k]*e1r  + fb[k]*e2r  + fc[k]*e0r ) * inv;
     }
-    for (int y = y0; y <= y1; y++) {
-        float e0 = e0r, e1 = e1r, e2 = e2r, f0 = fr[0], f1 = fr[1], f2 = fr[2], f3 = fr[3], f4 = fr[4], f5 = fr[5];
-        float *zr = &zbuf[y * W]; unsigned short *cr = &cbuf[y * W];
-        for (int x = x0; x <= x1; x++) {
-            if (e0 >= 0 && e1 >= 0 && e2 >= 0 && f0 > zr[x]) {
-                zr[x] = f0;
-                int R = (int)f3, G = (int)f4, B = (int)f5;
-                if (R < 0) { R = 0; }
-                if (R > 255) { R = 255; }
-                if (G < 0) { G = 0; }
-                if (G > 255) { G = 255; }
-                if (B < 0) { B = 0; }
-                if (B > 255) { B = 255; }
-                if (tex) {
-                    float z = 1.f / f0;
-                    int ui = ((int)(f1 * z * tw)) & wm, vi = ((int)(f2 * z * th)) & hm;
-                    unsigned short t = tex[vi * tw + ui];
-                    R = (((t >> 11) & 31) * R) >> 7; G = (((t >> 6) & 31) * G) >> 7; B = (((t >> 1) & 31) * B) >> 7;
-                    if (R > 31) { R = 31; }
-                    if (G > 31) { G = 31; }
-                    if (B > 31) { B = 31; }
-                    cr[x] = (R << 11) | (G << 6) | (B << 1) | 1;
-                } else {
-                    cr[x] = ((R >> 3) << 11) | ((G >> 3) << 6) | ((B >> 3) << 1) | 1;
+    /* inversas de los gradientes de borde: el rango de x de cada fila se calcula, no se recorre toda la caja */
+    float i0 = e0dx != 0.f ? 1.f / e0dx : 0.f, i1 = e1dx != 0.f ? 1.f / e1dx : 0.f, i2 = e2dx != 0.f ? 1.f / e2dx : 0.f;
+    int maxt = x1 - x0;
+    float tw_f = (float)tw, th_f = (float)th;
+    float dz = fdx[0];
+    for (int y = y0; y <= y1; y++, e0r += e0dy, e1r += e1dy, e2r += e2dy, fr[0] += fdy[0], fr[1] += fdy[1], fr[2] += fdy[2], fr[3] += fdy[3], fr[4] += fdy[4], fr[5] += fdy[5]) {
+        int tmin = 0, tmax = maxt;
+        if (e0dx > 0.f) { int t = (int)ceilf(-e0r * i0); if (t > tmin) tmin = t; } else if (e0dx < 0.f) { int t = (int)floorf(-e0r * i0); if (t < tmax) tmax = t; } else if (e0r < 0.f) continue;
+        if (e1dx > 0.f) { int t = (int)ceilf(-e1r * i1); if (t > tmin) tmin = t; } else if (e1dx < 0.f) { int t = (int)floorf(-e1r * i1); if (t < tmax) tmax = t; } else if (e1r < 0.f) continue;
+        if (e2dx > 0.f) { int t = (int)ceilf(-e2r * i2); if (t > tmin) tmin = t; } else if (e2dx < 0.f) { int t = (int)floorf(-e2r * i2); if (t < tmax) tmax = t; } else if (e2r < 0.f) continue;
+        if (tmin > tmax) continue;
+        float *zr = &zbuf[y * W + x0]; unsigned short *cr = &cbuf[y * W + x0];
+        float f0 = fr[0] + dz * (float)tmin;
+        int t = tmin;
+        if (tex) {
+            while (t <= tmax) {
+                int tn = t + 8; int last = 0;
+                if (tn >= tmax) { tn = tmax; last = 1; }
+                float zA = 1.f / (fr[0] + dz * (float)t), zB = 1.f / (fr[0] + dz * (float)tn);
+                float uA = (fr[1] + fdx[1] * (float)t) * zA * tw_f, vA = (fr[2] + fdx[2] * (float)t) * zA * th_f;
+                float uB = (fr[1] + fdx[1] * (float)tn) * zB * tw_f, vB = (fr[2] + fdx[2] * (float)tn) * zB * th_f;
+                int len = tn - t;
+                float du = len ? (uB - uA) / (float)len : 0.f, dv = len ? (vB - vA) / (float)len : 0.f;
+                int end = last ? tn + 1 : tn;
+                for (; t < end; t++, f0 += dz, uA += du, vA += dv) {
+                    if (f0 > zr[t]) {
+                        zr[t] = f0;
+                        float ft = (float)t;
+                        int R = (int)(fr[3] + fdx[3] * ft), G = (int)(fr[4] + fdx[4] * ft), B = (int)(fr[5] + fdx[5] * ft);
+                        unsigned short tc = tex[(((int)vA) & hm) * tw + (((int)uA) & wm)];
+                        if (R < 0) { R = 0; }
+                        if (G < 0) { G = 0; }
+                        if (B < 0) { B = 0; }
+                        R = (((tc >> 11) & 31) * R) >> 7; G = (((tc >> 6) & 31) * G) >> 7; B = (((tc >> 1) & 31) * B) >> 7;
+                        if (R > 31) { R = 31; }
+                        if (G > 31) { G = 31; }
+                        if (B > 31) { B = 31; }
+                        cr[t] = (R << 11) | (G << 6) | (B << 1) | 1;
+                    }
                 }
             }
-            e0 += e0dx; e1 += e1dx; e2 += e2dx; f0 += fdx[0]; f1 += fdx[1]; f2 += fdx[2]; f3 += fdx[3]; f4 += fdx[4]; f5 += fdx[5];
+        } else {
+            for (; t <= tmax; t++, f0 += dz) {
+                if (f0 > zr[t]) {
+                    zr[t] = f0;
+                    float ft = (float)t;
+                    int R = (int)(fr[3] + fdx[3] * ft), G = (int)(fr[4] + fdx[4] * ft), B = (int)(fr[5] + fdx[5] * ft);
+                    if (R < 0) { R = 0; }
+                    if (R > 255) { R = 255; }
+                    if (G < 0) { G = 0; }
+                    if (G > 255) { G = 255; }
+                    if (B < 0) { B = 0; }
+                    if (B > 255) { B = 255; }
+                    cr[t] = ((R >> 3) << 11) | ((G >> 3) << 6) | ((B >> 3) << 1) | 1;
+                }
+            }
         }
-        e0r += e0dy; e1r += e1dy; e2r += e2dy; for (int k = 0; k < 6; k++) fr[k] += fdy[k];
     }
 }
 
@@ -166,7 +194,7 @@ static VV lerp_vv(const VV *a, const VV *b, float t) {
 
 /* un triangulo en espacio camara: descarte, recorte contra el plano cercano y raster */
 static void submit(const VV *a, const VV *b, const VV *c, const unsigned short *tex, int tw, int th) {
-    if (a->z > 140 && b->z > 140 && c->z > 140) return;
+    if (a->z > 85 && b->z > 85 && c->z > 85) return;
     if (a->z < NEAR && b->z < NEAR && c->z < NEAR) return;
     if (a->x > 1.9f*a->z && b->x > 1.9f*b->z && c->x > 1.9f*c->z) return;
     if (a->x < -1.9f*a->z && b->x < -1.9f*b->z && c->x < -1.9f*c->z) return;
@@ -309,7 +337,7 @@ static void draw_world(void) {
         float big = b->h[0] > b->h[2] ? b->h[0] : b->h[2];
         if (big > 1000.f && b->kind != 5) continue;
         float dx = b->p[0] - e[0], dy = b->p[1] - e[1], dz = b->p[2] - e[2];
-        float lim = 80.f + big;
+        float lim = 60.f + big;
         if (b->kind != 5 && dx*dx + dy*dy + dz*dz > lim * lim) continue;
         float cr, cg, cb; box_color(b, i, &cr, &cg, &cb);
         int bt = BOXTEX[i];
@@ -322,7 +350,7 @@ static void draw_world(void) {
     for (int i = 0; i < NINST; i++) {
         const Inst *n = &INSTS[i];
         float dx = n->c[0] - eye[0], dy = n->c[1] - eye[1], dz = n->c[2] - eye[2];
-        float lim = 45.f + n->r;
+        float lim = 36.f + n->r;
         if (dx*dx + dy*dy + dz*dz > lim * lim) continue;
         if (dx * cam_f[0] + dy * cam_f[1] + dz * cam_f[2] < -n->r) continue;
         draw_model(n->model, n->m);
@@ -330,7 +358,7 @@ static void draw_world(void) {
     for (int i = 0; i < NGEM; i++) {
         if (pl.got[i]) continue;
         float dx = LGEMS[i][0] - e[0], dy = LGEMS[i][1] - e[1], dz = LGEMS[i][2] - e[2];
-        if (dx*dx + dy*dy + dz*dz > 45.f * 45.f) continue;
+        if (dx*dx + dy*dy + dz*dz > 36.f * 36.f) continue;
         float a = pl.t * 2.f, c = cosf(a), s = sinf(a);
         float m[12] = { c, 0, -s, 0, 1, 0, s, 0, c, LGEMS[i][0], LGEMS[i][1] + sinf(pl.t * 3.f + i) * 0.15f, LGEMS[i][2] };
         draw_model(MODEL_GEM, m);
@@ -368,11 +396,12 @@ int main(void) {
     SKY = (((int)(0.45f*31)) << 11) | (((int)(0.72f*31)) << 6) | (31 << 1) | 1;
     game_init(&pl);
     int title = 1, pg = 0, pd = 0, pw = 0; float pv = 0;
-    uint64_t last = get_ticks_us();
+    uint64_t last = get_ticks_us(); float fps = 0.f;
     while (1) {
         uint64_t now = get_ticks_us();
         float dt = (float)(now - last) / 1000000.f; last = now;
-        if (dt > 0.05f) dt = 0.05f;
+        if (dt > 0.07f) dt = 0.07f;
+        if (dt > 0.0001f) fps += (1.f / dt - fps) * 0.1f;
 
         joypad_poll();
         joypad_inputs_t in = joypad_get_inputs(JOYPAD_PORT_1);
@@ -408,17 +437,27 @@ int main(void) {
             float tt = (float)y / (H * 0.55f); if (tt > 1.f) tt = 1.f;
             int r = (int)(0.18f * 31 + (0.75f - 0.18f) * 31 * tt), g = (int)(0.44f * 31 + (0.88f - 0.44f) * 31 * tt), b = (int)(0.85f * 31 + (1.0f - 0.85f) * 31 * tt);
             unsigned short sc = (r << 11) | (g << 6) | (b << 1) | 1;
-            for (int x = 0; x < W; x++) cbuf[y * W + x] = sc;
+            uint32_t sc2 = ((uint32_t)sc << 16) | sc; uint32_t *row = (uint32_t *)&cbuf[y * W];
+            for (int x = 0; x < W / 2; x++) row[x] = sc2;
         }
         memset(zbuf, 0, sizeof zbuf);
         draw_world();
 
         surface_t *disp = display_get();
-        for (int y = 0; y < H; y++) {
-            uint32_t *r0 = (uint32_t *)((uint8_t *)disp->buffer + (2 * y) * disp->stride);
-            uint32_t *r1 = (uint32_t *)((uint8_t *)disp->buffer + (2 * y + 1) * disp->stride);
-            const unsigned short *src = &cbuf[y * W];
-            for (int x = 0; x < W; x++) { uint32_t v = ((uint32_t)src[x] << 16) | src[x]; r0[x] = v; r1[x] = v; }
+        {
+            static unsigned short xmap[320]; static int xmap_ok;
+            if (!xmap_ok) { for (int x = 0; x < 320; x++) xmap[x] = (unsigned short)(x * W / 320); xmap_ok = 1; }
+            int lastsy = -1; unsigned short *prev = 0;
+            for (int y = 0; y < 240; y++) {
+                int sy = y * H / 240;
+                unsigned short *dst = (unsigned short *)((uint8_t *)disp->buffer + y * disp->stride);
+                if (sy == lastsy) { memcpy(dst, prev, 640); }
+                else {
+                    const unsigned short *src = &cbuf[sy * W];
+                    for (int x = 0; x < 320; x += 2) { dst[x] = src[xmap[x]]; dst[x + 1] = src[xmap[x + 1]]; }
+                    lastsy = sy; prev = dst;
+                }
+            }
         }
         graphics_set_color(graphics_make_color(255, 255, 255, 255), graphics_make_color(0, 0, 0, 0));
         if (title) {
@@ -431,7 +470,7 @@ int main(void) {
             graphics_draw_text(disp, 40, 224, "Port no oficial - juego de zacdev");
         } else {
             char tx[48];
-            sprintf(tx, "GEMAS %d/%d  ALTURA %d", pl.gems, NGEM, (int)pl.p[1]);
+            sprintf(tx, "GEMAS %d/%d  ALTURA %d  FPS %d", pl.gems, NGEM, (int)pl.p[1], (int)(fps + 0.5f));
             graphics_draw_text(disp, 12, 12, tx);
             if (pl.won) graphics_draw_text(disp, 70, 110, "NIVEL COMPLETADO! START=REINICIAR");
         }
