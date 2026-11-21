@@ -103,10 +103,8 @@ static void audio_pump(void) {
 #define CLAMPF(v) fminf(fmaxf((v), -1000000.f), 1000000.f)
 /* triangulos diminutos del mundo se descartan (casi no cubren pixeles); la pera usa un umbral pequeno */
 static float MINA = 2.f;
-static unsigned n_tri, n_ras, n_pix, n_shd; static uint64_t k_setup, k_rows, k_tot;   /* diagnostico */
 #define FLATA 300.f
 static void raster(const SV *a, const SV *b, const SV *c, const unsigned short *tex, int tw, int th, int wm, int hm) {
-    uint64_t K0 = get_ticks(); n_tri++;
     float area = (b->x-a->x)*(c->y-a->y) - (c->x-a->x)*(b->y-a->y);
     if (fabsf(area) < MINA) return;
     if (area < 0) { const SV *t = b; b = c; c = t; area = -area; }
@@ -119,7 +117,6 @@ static void raster(const SV *a, const SV *b, const SV *c, const unsigned short *
     if (x1 > W - 1) { x1 = W - 1; }
     if (y1 > H - 1) { y1 = H - 1; }
     if (x0 > x1 || y0 > y1) return;
-    n_ras++;
     float inv = 1.f / area;
     /* gradientes de los atributos (plano) */
     float e0dx = -(b->y-a->y), e0dy = (b->x-a->x);       /* E(a,b,p) */
@@ -136,7 +133,7 @@ static void raster(const SV *a, const SV *b, const SV *c, const unsigned short *
     /* triangulos pequenos: sombreado plano (color medio por triangulo) y bucle de pixeles en enteros, mucho mas barato en la N64 */
     /* color uniforme en los tres vertices (suelo, caras de cajas): sombreado plano exacto, sea cual sea el tamano */
     int uniform = fabsf(a->r - b->r) + fabsf(a->r - c->r) + fabsf(a->g - b->g) + fabsf(a->g - c->g) + fabsf(a->b - b->b) + fabsf(a->b - c->b) < 6.f;
-    int flat = uniform || area < FLATA;
+    int flat = 1; (void)uniform;   /* siempre plano: estable, sin parpadeo y mas barato */
     int na = flat ? (tex ? 3 : 1) : 6;
     int mr = 0, mg = 0, mb = 0;
     if (flat) {
@@ -145,6 +142,17 @@ static void raster(const SV *a, const SV *b, const SV *c, const unsigned short *
         if (mg < 0) { mg = 0; }
         if (mb < 0) { mb = 0; }
         if (!tex) { if (mr > 255) { mr = 255; } if (mg > 255) { mg = 255; } if (mb > 255) { mb = 255; } }
+    }
+    int aff = 0;
+    if (flat && tex) {
+        float mxz = fmaxf(a->iz, fmaxf(b->iz, c->iz)), mnz = fminf(a->iz, fminf(b->iz, c->iz));
+        aff = mxz < 1.3f * mnz && mnz > 1e-6f;
+        if (aff) {
+            float za = 1.f / a->iz, zb = 1.f / b->iz, zc = 1.f / c->iz, twf = (float)tw, thf = (float)th;
+            fa[1] = a->uz * za * twf; fa[2] = a->vz * za * thf;
+            fb[1] = b->uz * zb * twf; fb[2] = b->vz * zb * thf;
+            fc[1] = c->uz * zc * twf; fc[2] = c->vz * zc * thf;
+        }
     }
     unsigned short flatcol = (unsigned short)(((mr >> 3) << 11) | ((mg >> 3) << 6) | ((mb >> 3) << 1) | 1);
     float fdx[6] = {0, 0, 0, 0, 0, 0}, fdy[6] = {0, 0, 0, 0, 0, 0}, fr[6] = {0, 0, 0, 0, 0, 0};
@@ -158,7 +166,6 @@ static void raster(const SV *a, const SV *b, const SV *c, const unsigned short *
     int maxt = x1 - x0;
     float tw_f = (float)tw, th_f = (float)th;
     float dz = fdx[0];
-    uint64_t K1 = get_ticks(); k_setup += K1 - K0;
     for (int y = y0; y <= y1; y++, e0r += e0dy, e1r += e1dy, e2r += e2dy, fr[0] += fdy[0], fr[1] += fdy[1], fr[2] += fdy[2], fr[3] += fdy[3], fr[4] += fdy[4], fr[5] += fdy[5]) {
         float tminf = 0.f, tmaxf = (float)maxt;
         if (e0dx > 0.f) { float tf = ceilf(CLAMPF(-e0r * i0)); if (tf > tminf) tminf = tf; } else if (e0dx < 0.f) { float tf = floorf(CLAMPF(-e0r * i0)); if (tf < tmaxf) tmaxf = tf; } else if (e0r < 0.f) continue;
@@ -166,13 +173,27 @@ static void raster(const SV *a, const SV *b, const SV *c, const unsigned short *
         if (e2dx > 0.f) { float tf = ceilf(CLAMPF(-e2r * i2)); if (tf > tminf) tminf = tf; } else if (e2dx < 0.f) { float tf = floorf(CLAMPF(-e2r * i2)); if (tf < tmaxf) tmaxf = tf; } else if (e2r < 0.f) continue;
         if (!(tminf <= tmaxf)) continue;
         int tmin = (int)tminf, tmax = (int)tmaxf;
-        n_pix += (unsigned)(tmax - tmin + 1);
         float *zr = &zbuf[y * W + x0]; unsigned short *cr = &cbuf[y * W + x0];
         float f0 = fr[0] + dz * (float)tmin;
         int t = tmin;
         if (flat && !tex) {
             for (; t <= tmax; t++, f0 += dz) {
-                if (f0 > zr[t]) { zr[t] = f0; n_shd++; cr[t] = flatcol; }
+                if (f0 > zr[t]) { zr[t] = f0; cr[t] = flatcol; }
+            }
+        } else if (flat && aff) {
+            float uS = fminf(fmaxf(fr[1] + fdx[1] * (float)t, -30000.f), 30000.f), vS = fminf(fmaxf(fr[2] + fdx[2] * (float)t, -30000.f), 30000.f);
+            int ui = (int)(uS * 65536.f), vi = (int)(vS * 65536.f);
+            int dui = (int)(fminf(fmaxf(fdx[1], -30000.f), 30000.f) * 65536.f), dvi = (int)(fminf(fmaxf(fdx[2], -30000.f), 30000.f) * 65536.f);
+            for (; t <= tmax; t++, f0 += dz, ui += dui, vi += dvi) {
+                if (f0 > zr[t]) {
+                    zr[t] = f0;
+                    unsigned short tc = tex[((vi >> 16) & hm) * tw + ((ui >> 16) & wm)];
+                    int R = (((tc >> 11) & 31) * mr) >> 7, G = (((tc >> 6) & 31) * mg) >> 7, B = (((tc >> 1) & 31) * mb) >> 7;
+                    if (R > 31) { R = 31; }
+                    if (G > 31) { G = 31; }
+                    if (B > 31) { B = 31; }
+                    cr[t] = (R << 11) | (G << 6) | (B << 1) | 1;
+                }
             }
         } else if (flat) {
             while (t <= tmax) {
@@ -190,7 +211,7 @@ static void raster(const SV *a, const SV *b, const SV *c, const unsigned short *
                 int end = last ? tn + 1 : tn;
                 for (; t < end; t++, f0 += dz, ui += dui, vi += dvi) {
                     if (f0 > zr[t]) {
-                        zr[t] = f0; n_shd++;
+                        zr[t] = f0;
                         unsigned short tc = tex[((vi >> 16) & hm) * tw + ((ui >> 16) & wm)];
                         int R = (((tc >> 11) & 31) * mr) >> 7, G = (((tc >> 6) & 31) * mg) >> 7, B = (((tc >> 1) & 31) * mb) >> 7;
                         if (R > 31) { R = 31; }
@@ -212,7 +233,7 @@ static void raster(const SV *a, const SV *b, const SV *c, const unsigned short *
                 int end = last ? tn + 1 : tn;
                 for (; t < end; t++, f0 += dz, uA += du, vA += dv) {
                     if (f0 > zr[t]) {
-                        zr[t] = f0; n_shd++;
+                        zr[t] = f0;
                         float ft = (float)t;
                         int R = (int)CLAMPF(fr[3] + fdx[3] * ft), G = (int)CLAMPF(fr[4] + fdx[4] * ft), B = (int)CLAMPF(fr[5] + fdx[5] * ft);
                         unsigned short tc = tex[(((int)vA) & hm) * tw + (((int)uA) & wm)];
@@ -230,7 +251,7 @@ static void raster(const SV *a, const SV *b, const SV *c, const unsigned short *
         } else {
             for (; t <= tmax; t++, f0 += dz) {
                 if (f0 > zr[t]) {
-                    zr[t] = f0; n_shd++;
+                    zr[t] = f0;
                     float ft = (float)t;
                     int R = (int)CLAMPF(fr[3] + fdx[3] * ft), G = (int)CLAMPF(fr[4] + fdx[4] * ft), B = (int)CLAMPF(fr[5] + fdx[5] * ft);
                     if (R < 0) { R = 0; }
@@ -244,7 +265,6 @@ static void raster(const SV *a, const SV *b, const SV *c, const unsigned short *
             }
         }
     }
-    k_rows += get_ticks() - K1;
 }
 
 static void project(const VV *v, SV *o) {
@@ -392,7 +412,7 @@ static int cam_hit(const float q[3]) {
     }
     return 0;
 }
-static unsigned t_box, t_inst, t_pear, t_cam, t_step, t_loop, d_tri, d_ras, d_pix, d_shd; static uint64_t d_set, d_row;   /* microsegundos del ultimo fotograma (diagnostico) */
+static unsigned t_box, t_inst, t_pear, t_cam, t_step, t_loop;   /* microsegundos del ultimo fotograma (diagnostico) */
 static void draw_world(void) {
     MINA = 2.f;
     uint64_t T0 = get_ticks_us();
@@ -536,9 +556,7 @@ int main(void) {
             for (int x = 0; x < W / 2; x++) row[x] = sc2;
         }
         memset(zbuf, 0, sizeof zbuf);
-        n_tri = n_ras = n_pix = n_shd = 0; k_setup = k_rows = 0;
         draw_world();
-        d_tri = n_tri; d_ras = n_ras; d_pix = n_pix; d_shd = n_shd; d_set = k_setup; d_row = k_rows;
 
         graphics_set_color(graphics_make_color(255, 255, 255, 255), graphics_make_color(0, 0, 0, 0));
         if (title) {
@@ -561,19 +579,12 @@ int main(void) {
                 for (int x = 0; x < TITLE_W; x++) { unsigned short p = TITLE[y * TITLE_W + x]; if (p) row[ox + x] = p; }
             }
             graphics_draw_text(disp, 112, 200, ((now / 500000) & 1) ? "PULSA START" : "           ");
-            graphics_draw_text(disp, 40, 224, "Port no oficial - juego de zacdev");
+            graphics_draw_text(disp, 32, 212, "Port N64 hecho por Shute Studios");
+            graphics_draw_text(disp, 64, 224, "Juego original de zacdev");
         } else {
-            char tx[96];
-            snprintf(tx, sizeof tx, "G%d/%d H%d F%d", pl.gems, NGEM, (int)pl.p[1], (int)(fps + 0.5f));
+            char tx[16];
+            snprintf(tx, sizeof tx, "%d", (int)(fps + 0.5f));
             graphics_draw_text(disp, 4, 4, tx);
-            snprintf(tx, sizeof tx, "C%u B%u I%u P%u", t_cam / 1000, t_box / 1000, t_inst / 1000, t_pear / 1000);
-            graphics_draw_text(disp, 4, 14, tx);
-            snprintf(tx, sizeof tx, "S%u L%u", t_step / 1000, t_loop / 1000);
-            graphics_draw_text(disp, 4, 24, tx);
-            snprintf(tx, sizeof tx, "T%u R%u X%u Y%u", d_tri, d_ras, d_pix / 100, d_shd / 100);
-            graphics_draw_text(disp, 4, 34, tx);
-            snprintf(tx, sizeof tx, "SET%u ROW%u", (unsigned)(d_set / 46875), (unsigned)(d_row / 46875));
-            graphics_draw_text(disp, 4, 44, tx);
             if (pl.won) { graphics_draw_text(disp, 8, 40, "COMPLETADO!"); graphics_draw_text(disp, 8, 52, "START=OTRA VEZ"); }
         }
         audio_pump();
