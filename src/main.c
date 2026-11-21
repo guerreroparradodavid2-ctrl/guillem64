@@ -323,8 +323,10 @@ static int cam_hit(const float q[3]) {
     }
     return 0;
 }
+static unsigned t_box, t_inst, t_pear, t_cam, t_step, t_loop;   /* microsegundos del ultimo fotograma (diagnostico) */
 static void draw_world(void) {
     MINA = 3.f;
+    uint64_t T0 = get_ticks_us();
     float e[3] = { pl.p[0], pl.p[1] + EYE, pl.p[2] };
     float cp = cosf(pl.pitch), sp = sinf(pl.pitch);
     float f[3] = { -sinf(pl.yaw) * cp, sp, -cosf(pl.yaw) * cp };
@@ -340,6 +342,7 @@ static void draw_world(void) {
     float tgt[3] = { e[0], e[1] - 0.2f, e[2] };
     set_camera(eye, tgt);
 
+    uint64_t T1 = get_ticks_us();
     for (int i = 0; i < NBOXDRAW; i++) {
         const LBox *b = &LBOXES[i];
         float big = b->h[0] > b->h[2] ? b->h[0] : b->h[2];
@@ -355,6 +358,7 @@ static void draw_world(void) {
         if (bt >= 0) { cr *= 0.6f; cg *= 0.6f; cb *= 0.6f; }
         draw_box(b, cr, cg, cb, bt, b->kind == 5 ? 5.f : 3.f);
     }
+    uint64_t T2 = get_ticks_us();
     for (int i = 0; i < NINST; i++) {
         const Inst *n = &INSTS[i];
         float dx = n->c[0] - eye[0], dy = n->c[1] - eye[1], dz = n->c[2] - eye[2];
@@ -371,6 +375,7 @@ static void draw_world(void) {
         float m[12] = { c, 0, -s, 0, 1, 0, s, 0, c, LGEMS[i][0], LGEMS[i][1] + sinf(pl.t * 3.f + i) * 0.15f, LGEMS[i][2] };
         draw_model(MODEL_GEM, m);
     }
+    uint64_t T3 = get_ticks_us();
     /* la pera gira hacia donde te mueves */
     if (last_x < 1e8f) {
         float mx = pl.p[0] - last_x, mz = pl.p[2] - last_z;
@@ -395,6 +400,7 @@ static void draw_world(void) {
             draw_model(MODEL_BALL, bm);
         }
     }
+    { uint64_t T4 = get_ticks_us(); t_cam = (unsigned)(T1 - T0); t_box = (unsigned)(T2 - T1); t_inst = (unsigned)(T3 - T2); t_pear = (unsigned)(T4 - T3); }
 }
 
 int main(void) {
@@ -440,7 +446,9 @@ int main(void) {
                 last = get_ticks_us(); continue;
             }
         } else if (pressed.start) { game_init(&pl); pg = pd = pw = 0; }
+        uint64_t TS = get_ticks_us();
         if (!title && !pl.won) game_step(&pl, dt, mx, mz, pressed.a || (held.a && pl.grounded), held.b || held.z);
+        t_step = (unsigned)(get_ticks_us() - TS);
 
         if (!title) {
             if (pl.gems > pg) sfx_play(0);
@@ -487,10 +495,15 @@ int main(void) {
             char tx[32];
             sprintf(tx, "G%d/%d H%d F%d", pl.gems, NGEM, (int)pl.p[1], (int)(fps + 0.5f));
             graphics_draw_text(disp, 4, 4, tx);
+            sprintf(tx, "C%u B%u I%u P%u", t_cam / 1000, t_box / 1000, t_inst / 1000, t_pear / 1000);
+            graphics_draw_text(disp, 4, 14, tx);
+            sprintf(tx, "S%u L%u", t_step / 1000, t_loop / 1000);
+            graphics_draw_text(disp, 4, 24, tx);
             if (pl.won) { graphics_draw_text(disp, 8, 40, "COMPLETADO!"); graphics_draw_text(disp, 8, 52, "START=OTRA VEZ"); }
         }
         audio_pump();
         data_cache_hit_writeback_invalidate(disp->buffer, disp->stride * disp->height);
+        t_loop = (unsigned)(get_ticks_us() - now);
         display_show(disp);
     }
     return 0;
