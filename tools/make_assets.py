@@ -96,7 +96,7 @@ insts = []
 for fn, tl, cl, M, near, go in D["inst"]:
     if fn.startswith(STATIC_SKIP): continue
     tris = sum(len(s) for s in mesh(fn)[3])
-    tgt = 24 if fn.startswith("Sphere") else (min(100, tris) if cnt[fn] > 3 else min(300, tris))
+    tgt = 16 if fn.startswith("Sphere") else (min(60, tris) if cnt[fn] > 3 else min(160, tris))
     key = (fn, tuple(tl), tuple(map(tuple, cl)))
     mid = add_model(key, build_model(fn, tl, cl, tgt))
     P, _, _, _ = mesh(fn); c = (P.min(0) + P.max(0)) / 2; ext = (P.max(0) - P.min(0)) / 2
@@ -110,7 +110,7 @@ print("instancias", len(insts), "modelos", len(models))
 PM = {i[0]: i for i in D["inst"] if i[0].startswith("mesh_id")}
 Pb = mesh("mesh_id32.001_153.obj")[0]; C0 = np.array([(Pb[:, 0].min() + Pb[:, 0].max()) / 2, Pb[:, 1].min(), (Pb[:, 2].min() + Pb[:, 2].max()) / 2])
 pear_models = []
-for fn, tgt in (("mesh_id32.001_153.obj", 700), ("mesh_id51.001_182.obj", 140), ("mesh_id47.001_180.obj", 60)):
+for fn, tgt in (("mesh_id32.001_153.obj", 320), ("mesh_id51.001_182.obj", 70), ("mesh_id47.001_180.obj", 30)):
     i = PM[fn]; M = i[3]; A = np.array([[M[0], M[3], M[6]], [M[1], M[4], M[7]], [M[2], M[5], M[8]]])
     def xf(P, N, A=A): return (P - C0) @ A.T, N @ (A / np.linalg.norm(A, axis=0)).T
     pear_models.append(add_model(("pear", fn), build_model(fn, i[1], i[2], tgt, xf)))

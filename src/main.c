@@ -10,6 +10,15 @@
 #include "music.h"
 #include "title.h"
 
+/* fminf/fmaxf/floorf/ceilf de newlib son llamadas a funcion lentisimas en la N64: version en linea */
+static inline float f_min(float a, float b) { return a < b ? a : b; }
+static inline float f_max(float a, float b) { return a > b ? a : b; }
+static inline float f_floor(float x) { int i = (int)x; return (float)(i - (x < (float)i)); }
+static inline float f_ceil(float x) { int i = (int)x; return (float)(i + (x > (float)i)); }
+#define fminf f_min
+#define fmaxf f_max
+#define floorf f_floor
+#define ceilf f_ceil
 #define W 128
 #define H 96
 #define NEAR 0.3f
@@ -133,9 +142,9 @@ static void raster(const SV *a, const SV *b, const SV *c, const unsigned short *
     float dz = fdx[0];
     for (int y = y0; y <= y1; y++, e0r += e0dy, e1r += e1dy, e2r += e2dy, fr[0] += fdy[0], fr[1] += fdy[1], fr[2] += fdy[2], fr[3] += fdy[3], fr[4] += fdy[4], fr[5] += fdy[5]) {
         float tminf = 0.f, tmaxf = (float)maxt;
-        if (e0dx > 0.f) { float tf = ceilf(-e0r * i0); if (tf > tminf) tminf = tf; } else if (e0dx < 0.f) { float tf = floorf(-e0r * i0); if (tf < tmaxf) tmaxf = tf; } else if (e0r < 0.f) continue;
-        if (e1dx > 0.f) { float tf = ceilf(-e1r * i1); if (tf > tminf) tminf = tf; } else if (e1dx < 0.f) { float tf = floorf(-e1r * i1); if (tf < tmaxf) tmaxf = tf; } else if (e1r < 0.f) continue;
-        if (e2dx > 0.f) { float tf = ceilf(-e2r * i2); if (tf > tminf) tminf = tf; } else if (e2dx < 0.f) { float tf = floorf(-e2r * i2); if (tf < tmaxf) tmaxf = tf; } else if (e2r < 0.f) continue;
+        if (e0dx > 0.f) { float tf = ceilf(CLAMPF(-e0r * i0)); if (tf > tminf) tminf = tf; } else if (e0dx < 0.f) { float tf = floorf(CLAMPF(-e0r * i0)); if (tf < tmaxf) tmaxf = tf; } else if (e0r < 0.f) continue;
+        if (e1dx > 0.f) { float tf = ceilf(CLAMPF(-e1r * i1)); if (tf > tminf) tminf = tf; } else if (e1dx < 0.f) { float tf = floorf(CLAMPF(-e1r * i1)); if (tf < tmaxf) tmaxf = tf; } else if (e1r < 0.f) continue;
+        if (e2dx > 0.f) { float tf = ceilf(CLAMPF(-e2r * i2)); if (tf > tminf) tminf = tf; } else if (e2dx < 0.f) { float tf = floorf(CLAMPF(-e2r * i2)); if (tf < tmaxf) tmaxf = tf; } else if (e2r < 0.f) continue;
         if (!(tminf <= tmaxf)) continue;
         int tmin = (int)tminf, tmax = (int)tmaxf;
         float *zr = &zbuf[y * W + x0]; unsigned short *cr = &cbuf[y * W + x0];
@@ -292,9 +301,18 @@ static void draw_box(const LBox *b, float cr, float cg, float cb, int tex, float
     }
     const unsigned short *tx = 0; int tw = 1, th = 1;
     if (tex >= 0) { tx = TEXTURES[tex].px; tw = TEXTURES[tex].w; th = TEXTURES[tex].h; }
+    float ccx = 0, ccy = 0, ccz = 0;
+    for (int i = 0; i < 8; i++) { ccx += c[i].x; ccy += c[i].y; ccz += c[i].z; }
+    ccx *= 0.125f; ccy *= 0.125f; ccz *= 0.125f;
     /* cara f: 4 vertices consecutivos por el orden (lx,lz): 0(-,-) 1(+,-) 2(+,+) 3(-,+) */
     for (int f = 0; f < 6; f++) {
         VV q[4];
+        if (b->kind != 5) {
+            float fx = 0, fy = 0, fz = 0;
+            for (int k = 0; k < 4; k++) { fx += c[CF[f][k]].x; fy += c[CF[f][k]].y; fz += c[CF[f][k]].z; }
+            fx *= 0.25f; fy *= 0.25f; fz *= 0.25f;
+            if ((fx - ccx) * fx + (fy - ccy) * fy + (fz - ccz) * fz >= 0.f) continue;   /* cara trasera */
+        }
         for (int k = 0; k < 4; k++) {
             int ci = CF[f][k]; q[k] = c[ci];
             q[k].r = cr*CS[f]*255; q[k].g = cg*CS[f]*255; q[k].b = cb*CS[f]*255;
@@ -417,8 +435,8 @@ int main(void) {
     while (1) {
         uint64_t now = get_ticks_us();
         float dt = (float)(now - last) / 1000000.f; last = now;
-        if (dt > 0.07f) dt = 0.07f;
         if (dt > 0.0001f) fps += (1.f / dt - fps) * 0.1f;
+        if (dt > 0.07f) dt = 0.07f;
 
         joypad_poll();
         joypad_inputs_t in = joypad_get_inputs(JOYPAD_PORT_1);
