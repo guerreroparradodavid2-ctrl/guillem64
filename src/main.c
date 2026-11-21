@@ -103,6 +103,7 @@ static void audio_pump(void) {
 #define CLAMPF(v) fminf(fmaxf((v), -1000000.f), 1000000.f)
 /* triangulos diminutos del mundo se descartan (casi no cubren pixeles); la pera usa un umbral pequeno */
 static float MINA = 3.f;
+#define FLATA 300.f
 static void raster(const SV *a, const SV *b, const SV *c, const unsigned short *tex, int tw, int th, int wm, int hm) {
     float area = (b->x-a->x)*(c->y-a->y) - (c->x-a->x)*(b->y-a->y);
     if (fabsf(area) < MINA) return;
@@ -129,8 +130,20 @@ static void raster(const SV *a, const SV *b, const SV *c, const unsigned short *
     float fa[6] = { a->iz, a->uz, a->vz, a->r, a->g, a->b };
     float fb[6] = { b->iz, b->uz, b->vz, b->r, b->g, b->b };
     float fc[6] = { c->iz, c->uz, c->vz, c->r, c->g, c->b };
-    float fdx[6], fdy[6], fr[6];
-    for (int k = 0; k < 6; k++) {
+    /* triangulos pequenos: sombreado plano (color medio por triangulo) y bucle de pixeles en enteros, mucho mas barato en la N64 */
+    int flat = area < FLATA;
+    int na = flat ? (tex ? 3 : 1) : 6;
+    int mr = 0, mg = 0, mb = 0;
+    if (flat) {
+        mr = (int)CLAMPF((a->r + b->r + c->r) * 0.33333f); mg = (int)CLAMPF((a->g + b->g + c->g) * 0.33333f); mb = (int)CLAMPF((a->b + b->b + c->b) * 0.33333f);
+        if (mr < 0) { mr = 0; }
+        if (mg < 0) { mg = 0; }
+        if (mb < 0) { mb = 0; }
+        if (!tex) { if (mr > 255) { mr = 255; } if (mg > 255) { mg = 255; } if (mb > 255) { mb = 255; } }
+    }
+    unsigned short flatcol = (unsigned short)(((mr >> 3) << 11) | ((mg >> 3) << 6) | ((mb >> 3) << 1) | 1);
+    float fdx[6] = {0, 0, 0, 0, 0, 0}, fdy[6] = {0, 0, 0, 0, 0, 0}, fr[6] = {0, 0, 0, 0, 0, 0};
+    for (int k = 0; k < na; k++) {
         fdx[k] = (fa[k]*e1dx + fb[k]*e2dx + fc[k]*e0dx) * inv;
         fdy[k] = (fa[k]*e1dy + fb[k]*e2dy + fc[k]*e0dy) * inv;
         fr[k]  = (fa[k]*e1r  + fb[k]*e2r  + fc[k]*e0r ) * inv;
@@ -150,7 +163,37 @@ static void raster(const SV *a, const SV *b, const SV *c, const unsigned short *
         float *zr = &zbuf[y * W + x0]; unsigned short *cr = &cbuf[y * W + x0];
         float f0 = fr[0] + dz * (float)tmin;
         int t = tmin;
-        if (tex) {
+        if (flat && !tex) {
+            for (; t <= tmax; t++, f0 += dz) {
+                if (f0 > zr[t]) { zr[t] = f0; cr[t] = flatcol; }
+            }
+        } else if (flat) {
+            while (t <= tmax) {
+                int tn = t + 8; int last = 0;
+                if (tn >= tmax) { tn = tmax; last = 1; }
+                float fzA = fr[0] + dz * (float)t, fzB = fr[0] + dz * (float)tn; if (fzA < 1e-5f) fzA = 1e-5f; if (fzB < 1e-5f) fzB = 1e-5f; float zA = 1.f / fzA, zB = 1.f / fzB;
+                float uA = (fr[1] + fdx[1] * (float)t) * zA * tw_f, vA = (fr[2] + fdx[2] * (float)t) * zA * th_f;
+                float uB = (fr[1] + fdx[1] * (float)tn) * zB * tw_f, vB = (fr[2] + fdx[2] * (float)tn) * zB * th_f;
+                uA = fminf(fmaxf(uA, -30000.f), 30000.f); vA = fminf(fmaxf(vA, -30000.f), 30000.f);
+                uB = fminf(fmaxf(uB, -30000.f), 30000.f); vB = fminf(fmaxf(vB, -30000.f), 30000.f);
+                int len = tn - t;
+                float inl = len ? 65536.f / (float)len : 0.f;
+                int ui = (int)(uA * 65536.f), vi = (int)(vA * 65536.f);
+                int dui = (int)((uB - uA) * inl), dvi = (int)((vB - vA) * inl);
+                int end = last ? tn + 1 : tn;
+                for (; t < end; t++, f0 += dz, ui += dui, vi += dvi) {
+                    if (f0 > zr[t]) {
+                        zr[t] = f0;
+                        unsigned short tc = tex[((vi >> 16) & hm) * tw + ((ui >> 16) & wm)];
+                        int R = (((tc >> 11) & 31) * mr) >> 7, G = (((tc >> 6) & 31) * mg) >> 7, B = (((tc >> 1) & 31) * mb) >> 7;
+                        if (R > 31) { R = 31; }
+                        if (G > 31) { G = 31; }
+                        if (B > 31) { B = 31; }
+                        cr[t] = (R << 11) | (G << 6) | (B << 1) | 1;
+                    }
+                }
+            }
+        } else if (tex) {
             while (t <= tmax) {
                 int tn = t + 8; int last = 0;
                 if (tn >= tmax) { tn = tmax; last = 1; }
@@ -210,7 +253,7 @@ static VV lerp_vv(const VV *a, const VV *b, float t) {
 
 /* un triangulo en espacio camara: descarte, recorte contra el plano cercano y raster */
 static void submit(const VV *a, const VV *b, const VV *c, const unsigned short *tex, int tw, int th) {
-    if (a->z > 85 && b->z > 85 && c->z > 85) return;
+    if (a->z > 70 && b->z > 70 && c->z > 70) return;
     if (a->z < NEAR && b->z < NEAR && c->z < NEAR) return;
     if (a->x > 1.9f*a->z && b->x > 1.9f*b->z && c->x > 1.9f*c->z) return;
     if (a->x < -1.9f*a->z && b->x < -1.9f*b->z && c->x < -1.9f*c->z) return;
@@ -366,7 +409,7 @@ static void draw_world(void) {
         float big = b->h[0] > b->h[2] ? b->h[0] : b->h[2];
         if (big > 1000.f && b->kind != 5) continue;
         float dx = b->p[0] - e[0], dy = b->p[1] - e[1], dz = b->p[2] - e[2];
-        float lim = 60.f + big;
+        float lim = 50.f + big;
         if (b->kind != 5 && dx*dx + dy*dy + dz*dz > lim * lim) continue;
         float cr, cg, cb; box_color(b, i, &cr, &cg, &cb);
         int bt = BOXTEX[i];
@@ -380,7 +423,7 @@ static void draw_world(void) {
     for (int i = 0; i < NINST; i++) {
         const Inst *n = &INSTS[i];
         float dx = n->c[0] - eye[0], dy = n->c[1] - eye[1], dz = n->c[2] - eye[2];
-        float lim = 36.f + n->r;
+        float lim = 30.f + n->r;
         if (dx*dx + dy*dy + dz*dz > lim * lim) continue;
         if (dx * cam_f[0] + dy * cam_f[1] + dz * cam_f[2] < -n->r) continue;
         draw_model(n->model, n->m);
@@ -388,7 +431,7 @@ static void draw_world(void) {
     for (int i = 0; i < NGEM; i++) {
         if (pl.got[i]) continue;
         float dx = LGEMS[i][0] - e[0], dy = LGEMS[i][1] - e[1], dz = LGEMS[i][2] - e[2];
-        if (dx*dx + dy*dy + dz*dz > 36.f * 36.f) continue;
+        if (dx*dx + dy*dy + dz*dz > 30.f * 30.f) continue;
         float a = pl.t * 2.f, c = cosf(a), s = sinf(a);
         float m[12] = { c, 0, -s, 0, 1, 0, s, 0, c, LGEMS[i][0], LGEMS[i][1] + sinf(pl.t * 3.f + i) * 0.15f, LGEMS[i][2] };
         draw_model(MODEL_GEM, m);
